@@ -170,7 +170,7 @@ public partial class BattleHUD : UIScene
             this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
             this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
             this.SetCommandPSX();
-            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse (Configuration.Graphics.BattleUIScale), -350f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse (Configuration.Graphics.BattleUIScale)+50, -350f * float.Parse (Configuration.Graphics.BattleUIScale));
             this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
             this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
             this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
@@ -201,7 +201,7 @@ public partial class BattleHUD : UIScene
             this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
             this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
             this.SetCommandPSX();
-            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse(Configuration.Graphics.BattleUIScale) - UIManager.UIPillarBoxSize.x, -350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse(Configuration.Graphics.BattleUIScale) - UIManager.UIPillarBoxSize.x+50, -350f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) +  UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
