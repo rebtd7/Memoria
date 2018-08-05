@@ -251,6 +251,8 @@ public partial class BattleHUD : UIScene
             return;
         _oneTime = false;
         Application.targetFrameRate = 60;
+        this.uiRoot.scalingStyle = UIRoot.Scaling.Constrained;
+        this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height);
         Hide(() => PersistenSingleton<UIManager>.Instance.ChangeUIState(UIManager.UIState.BattleResult));
     }
 
@@ -260,6 +262,8 @@ public partial class BattleHUD : UIScene
             return;
         _oneTime = false;
         Application.targetFrameRate = 60;
+        this.uiRoot.scalingStyle = UIRoot.Scaling.Constrained;
+        this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height);
         Hide(() => PersistenSingleton<UIManager>.Instance.ChangeUIState(UIManager.UIState.GameOver));
     }
 
