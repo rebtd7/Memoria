@@ -6,8 +6,9 @@ using Memoria.Data;
 using Memoria.Database;
 using Memoria.Prime;
 using Memoria.Scenes;
-using Memoria.Test;
 using UnityEngine;
+using System.IO;
+using System.Text.RegularExpressions;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable NotAccessedField.Global
@@ -96,6 +97,7 @@ public partial class BattleHUD : UIScene
         //    }
         //}
     }
+    
 
     public void SetScaleOfUI()
     {
@@ -106,18 +108,18 @@ public partial class BattleHUD : UIScene
         this.uiRoot = this._abilityScrollList.gameObject.transform.root.GetComponent<UIRoot>();
         this.uiRect = this.uiRoot.GetComponent<UIRect>();
         this.uiRoot.scalingStyle = UIRoot.Scaling.Flexible;
-        this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height * 1.55f);
-        this.uiRect.SetRect(-UIManager.UIActualScreenSize.x / 2f, -UIManager.UIActualScreenSize.y / 2f, UIManager.UIActualScreenSize.x * 2f, UIManager.UIActualScreenSize.y * 2f);
+        this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height * float.Parse(Configuration.Graphics.BattleUIScale));
+        this.uiRect.SetRect(0f, 0f, (float)Screen.width * 3, (float)Screen.height * 3);
         this.MoveUIObjectsForScale();
         this.CommandPanelFix();
         UIWidget[] componentsInChildren = this.AllMenuPanel.GetComponentsInChildren<UIWidget>();
-
+        checked
+        {
             for (int i = 0; i < componentsInChildren.Length; i++)
             {
                 componentsInChildren[i].MarkAsChanged();
             }
-            
-        
+        }
     }
 
     public void SetCommandPSX()
@@ -156,24 +158,24 @@ public partial class BattleHUD : UIScene
     {
         if (!Configuration.Graphics.WidescreenSupport && UIManager.UIActualScreenSize.x / UIManager.UIActualScreenSize.y >= 1.6f)
         {
-            this._abilityPanel.transform.SetX(this.left + (float)this._abilityPanel.GetComponent<UIWidget>().width * 0.125f);
-            this._abilityPanel.transform.SetY(this.bottom);
-            this._itemPanel.transform.SetX(this.left + (float)this._abilityPanel.GetComponent<UIWidget>().width * 0.125f);
-            this._itemPanel.transform.SetY(this.bottom);
+            this._abilityPanel.transform.SetX(-500f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._abilityPanel.transform.SetY(-350f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetX(-500f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetY(-350f * float.Parse (Configuration.Graphics.BattleUIScale));
             this._commandPanel.Widget.SetRect(0f, 0f, 350f, 450f);
-            this._commandPanel.Transform.SetX(this.left);
-            this._commandPanel.Transform.SetY(this.bottom);
+            this._commandPanel.Transform.SetX(-550f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Transform.SetY(-350f * float.Parse (Configuration.Graphics.BattleUIScale));
             this._commandPanel.Attack.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
             this._commandPanel.Skill1.Button.GetComponent<UIWidget>().SetRect(this.sk1Vec.x, this.sk1Vec.y, this.sk1Vec.z, this.sk1Vec.w);
             this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
             this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
             this.SetCommandPSX();
-            this.TargetPanel.transform.localPosition = new Vector3(this.left + (float)this._targetPanel.Widget.width * 0.25f, this.bottom);
-            this._statusPanel.HP.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.12f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._statusPanel.MP.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.12f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.12f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.12f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._partyDetail.Transform.localPosition = new Vector3(this.right - (float)this._partyDetail.Widget.width * 0.25f, this.bottom - (float)this._partyDetail.Widget.height * 0.25f);
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse (Configuration.Graphics.BattleUIScale), -350f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
             this._partyDetail.Widget.panel.RebuildAllDrawCalls();
             this.BattleDialogGameObject.gameObject.transform.localPosition = new Vector3(0f, UIManager.UIActualScreenSize.y * 0.5f - 200f);
             this.BattleDialogGameObject.gameObject.transform.localScale = new Vector3(1.1f, 1.1f);
@@ -183,27 +185,28 @@ public partial class BattleHUD : UIScene
             ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
             ButtonGroupState.SetPointerLimitRectToGroup(this.AbilityPanel.GetComponent<UIWidget>(), this._abilityScrollList.cellHeight, "Battle.Ability");
             ButtonGroupState.SetPointerLimitRectToGroup(this.ItemPanel.GetComponent<UIWidget>(), this._itemScrollList.cellHeight, "Battle.Item");
+            return;
         }
-        else if(UIManager.UIActualScreenSize.x/UIManager.UIActualScreenSize.y >= 1.6f)
+        if (Configuration.Graphics.WidescreenSupport && UIManager.UIActualScreenSize.x / UIManager.UIActualScreenSize.y >= 1.6f)
         {
-            this._abilityPanel.transform.SetX(this.left - (float)this._abilityPanel.GetComponent<UIWidget>().width * 0.125f);
-            this._abilityPanel.transform.SetY(this.bottom);
-            this._itemPanel.transform.SetX(this.left - (float)this._abilityPanel.GetComponent<UIWidget>().width * 0.125f);
-            this._itemPanel.transform.SetY(this.bottom);
+            this._abilityPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) - UIManager.UIPillarBoxSize.x);
+            this._abilityPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) -  UIManager.UIPillarBoxSize.x);
+            this._itemPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._commandPanel.Widget.SetRect(0f, 0f, 350f, 450f);
-            this._commandPanel.Transform.SetX(this.left - (float)this._commandPanel.Widget.width * 0.75f);
-            this._commandPanel.Transform.SetY(this.bottom);
+            this._commandPanel.Transform.SetX(-550f * float.Parse(Configuration.Graphics.BattleUIScale) -  UIManager.UIPillarBoxSize.x);
+            this._commandPanel.Transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._commandPanel.Attack.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
             this._commandPanel.Skill1.Button.GetComponent<UIWidget>().SetRect(this.sk1Vec.x, this.sk1Vec.y, this.sk1Vec.z, this.sk1Vec.w);
             this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
             this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
             this.SetCommandPSX();
-            this.TargetPanel.transform.localPosition = new Vector3(this.left, this.bottom);
-            this._statusPanel.HP.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.5f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._statusPanel.MP.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.5f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.5f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(this.right + (float)this._statusPanel.HP.Widget.width * 0.5f, this.bottom - (float)this._statusPanel.HP.Widget.height * 0.25f);
-            this._partyDetail.Transform.localPosition = new Vector3(this.right + (float)this._partyDetail.Widget.width * 0.125f, this.bottom - (float)this._partyDetail.Widget.height * 0.25f);
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse(Configuration.Graphics.BattleUIScale) - UIManager.UIPillarBoxSize.x, -350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) +  UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._partyDetail.Widget.panel.RebuildAllDrawCalls();
             this.BattleDialogGameObject.gameObject.transform.localPosition = new Vector3(0f, UIManager.UIActualScreenSize.y * 0.5f - 200f);
             this.BattleDialogGameObject.gameObject.transform.localScale = new Vector3(1.1f, 1.1f);
@@ -213,27 +216,28 @@ public partial class BattleHUD : UIScene
             ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
             ButtonGroupState.SetPointerLimitRectToGroup(this.AbilityPanel.GetComponent<UIWidget>(), this._abilityScrollList.cellHeight, "Battle.Ability");
             ButtonGroupState.SetPointerLimitRectToGroup(this.ItemPanel.GetComponent<UIWidget>(), this._itemScrollList.cellHeight, "Battle.Item");
+            return;
         }
-        else if(UIManager.UIActualScreenSize.x / UIManager.UIActualScreenSize.y <= 1.6f)
+        if (UIManager.UIActualScreenSize.x / UIManager.UIActualScreenSize.y <= 1.6f)
         {
-            this._abilityPanel.transform.SetX(this.left + (float)this._abilityPanel.GetComponent<UIWidget>().width * 0.125f);
-            this._abilityPanel.transform.SetY(this.bottom + (float)this._abilityPanel.GetComponent<UIWidget>().height * 0.125f);
-            this._itemPanel.transform.SetX(this.left + (float)this._abilityPanel.GetComponent<UIWidget>().width * 0.125f);
-            this._itemPanel.transform.SetY(this.bottom + (float)this._abilityPanel.GetComponent<UIWidget>().height * 0.125f);
+            this._abilityPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) );
+            this._abilityPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) );
+            this._itemPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._commandPanel.Widget.SetRect(0f, 0f, 350f, 450f);
-            this._commandPanel.Transform.SetX(this.left - this._commandPanel.Widget.width * 0.25f);
-            this._commandPanel.Transform.SetY(this.bottom + (float)this._commandPanel.Widget.height * 0.125f);
+            this._commandPanel.Transform.SetX(-550f * float.Parse(Configuration.Graphics.BattleUIScale) );
+            this._commandPanel.Transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._commandPanel.Attack.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
             this._commandPanel.Skill1.Button.GetComponent<UIWidget>().SetRect(this.sk1Vec.x, this.sk1Vec.y, this.sk1Vec.z, this.sk1Vec.w);
             this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
             this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
             this.SetCommandPSX();
-            this.TargetPanel.transform.localPosition = new Vector3(this.left + _targetPanel.Widget.width * 0.25f, this.bottom + (float)this._commandPanel.Widget.height * 0.125f);
-            this._statusPanel.HP.Transform.localPosition = new Vector3(this.right, this.bottom);
-            this._statusPanel.MP.Transform.localPosition = new Vector3(this.right, this.bottom);
-            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(this.right, this.bottom);
-            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(this.right, this.bottom);
-            this._partyDetail.Transform.localPosition = new Vector3(this.right - (float)this._partyDetail.Widget.width * 0.125f, this.bottom);
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse(Configuration.Graphics.BattleUIScale) , -350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
             this._partyDetail.Widget.panel.RebuildAllDrawCalls();
             this.BattleDialogGameObject.gameObject.transform.localPosition = new Vector3(0f, UIManager.UIActualScreenSize.y * 0.5f - 200f);
             this.BattleDialogGameObject.gameObject.transform.localScale = new Vector3(1.1f, 1.1f);
@@ -249,10 +253,10 @@ public partial class BattleHUD : UIScene
     public void Start()
     {
         this.panelFix = 0;
-        this.left = UIManager.UIScreenCoOrdinate.x;
-        this.right = UIManager.UIScreenCoOrdinate.z;
-        this.bottom = UIManager.UIScreenCoOrdinate.y;
-        this.top = UIManager.UIScreenCoOrdinate.w;
+        this.left = UIManager.ScreenResUIScreenCoOrdinate.x;
+        this.right = UIManager.ScreenResUIScreenCoOrdinate.z;
+        this.bottom = UIManager.ScreenResUIScreenCoOrdinate.y;
+        this.top = UIManager.ScreenResUIScreenCoOrdinate.w;
     }
 
     public void CommandPanelFix()

@@ -13,6 +13,7 @@ namespace Memoria
             public readonly IniValue<Boolean> WidescreenSupport;
             public readonly IniValue<Int32> SkipIntros;
             public readonly IniValue<Int32> GarnetHair;
+            public readonly IniValue<String> BattleUIScale;
 
             public GraphicsSection() : base(nameof(GraphicsSection), false)
             {
@@ -22,6 +23,7 @@ namespace Memoria
                 WidescreenSupport = BindBoolean(nameof(WidescreenSupport), true);
                 SkipIntros = BindInt32(nameof(SkipIntros), 0);
                 GarnetHair = BindInt32(nameof(GarnetHair), 0);
+                BattleUIScale = BindString(nameof(BattleUIScale), "1");
             }
         }
     }
