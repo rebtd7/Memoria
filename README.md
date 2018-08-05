@@ -31,18 +31,19 @@ Final Fantasy IX Engine
 
 
 # Features:
-1. Widescreen support (just select any 16:9 resolution)
-2. Disable/Enable cheats
-3. Fast battles (Change FPS, a Swirl duration, skip waiting or turn-based)
-4. Save/Load anywhere (Alt+F5, Alt+F9) 
-5. Edit game data (look at the "StreamingAssets\Data" folder)
-6. Change ability mechanics (look at the "StreamingAssets\Scripts" folder)
-7. All of the characters available (Alt+F2 to show a party window) [be careful](https://github.com/Albeoris/Memoria/issues/3)!
-8. Easy rope jumping, frog catching, hippaul racing
-9. Auto discard cards
-10. Change the game font
-11. Export/import text resources
-12. Export/import audio resources (Ctrl+Alt+Shift+S to debug)
+1. Custom Size PSX Style Battle HUD/UI Value(Modify value in Memoria.ini)
+2. Widescreen support (just select any 16:9 resolution)
+3. Disable/Enable cheats
+4. Fast battles (Change FPS, a Swirl duration, skip waiting or turn-based)
+5. Save/Load anywhere (Alt+F5, Alt+F9) 
+6. Edit game data (look at the "StreamingAssets\Data" folder)
+7. Change ability mechanics (look at the "StreamingAssets\Scripts" folder)
+8. All of the characters available (Alt+F2 to show a party window) [be careful](https://github.com/Albeoris/Memoria/issues/3)!
+9. Easy rope jumping, frog catching, hippaul racing
+10. Auto discard cards
+11. Change the game font
+12. Export/import text resources
+13. Export/import audio resources (Ctrl+Alt+Shift+S to debug)
 
 
 # Configuration:
