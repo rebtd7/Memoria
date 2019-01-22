@@ -1,26 +1,19 @@
-# Memoria
+# Memoria + Moguri HD 
 Final Fantasy IX Engine
 
-# Updates
-1. Update the game to the **latest** version.
-2. Update Memoria to the **latest** version.
-3. **Delete** "Memoria.ini" from the game directory (otherwise you will not see new settings).
-4. Patch again
+Installation :
 
-
-# Build
-1. Use Visual Studio 2015/2017 or JetBrains Rider.
-2. Copy "*.dll" from "\FINAL FANTASY IX\x64\FF9_Data\Managed" to the "\References" folder in the solution directory.
-3. Resture NuGet packages manualy or enable automaticaly package downloads.
-
+# Copy File:
+1. OPTIONAL  - Backup your Final Fantasy IX steam installation folder
+2. Copy the "StreamingAssets" folder inside your Final Fantasy IX steam installation folder. It should override existing files.
 
 # Patch:
-1. Memoria.Patcher.exe - will patch game files using current directory or path from the windows registry
+1. Launch Memoria.Patcher.exe - will patch game files using current directory or path from the windows registry
 2. Memoria.Patcher.exe gameDirectory - will patch game files using a provided path
 
 
 # First run:
-1. Run game.
+1. Run the game.
 2. If there is no error you will see "Memoria.ini" file in the game directory.
 3. If something went wrong you will see error in the "Memoria.log"
 4. If you not see "Memoria.log" try to run game with administrator rights

@@ -28,7 +28,8 @@ namespace Memoria.Patcher
                     if (cur != null)
                         break;
                 }
-
+                if (cur == null)
+                    cur = def;
                 return new Lang(def, cur);
             }
             catch (Exception ex)
