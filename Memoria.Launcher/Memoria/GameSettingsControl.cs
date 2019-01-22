@@ -49,35 +49,6 @@ namespace Memoria.Launcher
             Margin = new Thickness(5);
             DataContext = this;
 
-            LinearGradientBrush backgroundStroke = new LinearGradientBrush
-            {
-                EndPoint = new Point(0.5, 1),
-                StartPoint = new Point(0.5, 0),
-                RelativeTransform = new RotateTransform(115, 0.5, 0.5),
-                GradientStops = new GradientStopCollection
-                {
-                    new GradientStop(Color.FromArgb(0xff, 0x61, 0x61, 0x61), 0),
-                    new GradientStop(Color.FromArgb(0xff, 0xF2, 0xF2, 0xF2), 0.504),
-                    new GradientStop(Color.FromArgb(0xff, 0xAE, 0xB1, 0xB1), 1)
-                }
-            };
-            backgroundStroke.Freeze();
-
-            LinearGradientBrush backgroundFill = new LinearGradientBrush
-            {
-                MappingMode = BrushMappingMode.RelativeToBoundingBox,
-                StartPoint = new Point(0.5, 1.0),
-                EndPoint = new Point(0.5, -0.4),
-                GradientStops = new GradientStopCollection
-                {
-                    new GradientStop(Color.FromArgb(0xBB, 0x44, 0x71, 0xc1), 0),
-                    new GradientStop(Color.FromArgb(0xBB, 0x28, 0x36, 0x65), 1)
-                }
-            };
-            backgroundFill.Freeze();
-
-            Rectangle backround = AddUiElement(new Rectangle {Stroke = backgroundStroke, Fill = backgroundFill, StrokeThickness = 5}, 0, 0, 9, 2);
-
             Thickness rowMargin = new Thickness(0, 8, 0, 3);
             
             AddUiElement(UiTextBlockFactory.Create(Lang.Settings.ActiveMonitor), row: 0, col: 0, colSpan:2).Margin = rowMargin;
@@ -119,20 +90,20 @@ namespace Memoria.Launcher
 
             foreach (FrameworkElement child in Children)
             {
-                if (!ReferenceEquals(child, backround))
+                /*if (!ReferenceEquals(child, backround))
                     child.Margin = new Thickness(child.Margin.Left + 8, child.Margin.Top, child.Margin.Right + 8, child.Margin.Bottom);
-
+                    */
                 TextBlock textblock = child as TextBlock;
                 if (textblock != null)
                 {
-                    textblock.Foreground = Brushes.WhiteSmoke;
+                    textblock.Foreground = Brushes.Black;
                     textblock.FontWeight = FontWeight.FromOpenTypeWeight(500);
                     continue;
                 }
 
                 Control control = child as Control;
                 if (control != null && !(control is ComboBox))
-                    control.Foreground = Brushes.WhiteSmoke;
+                    control.Foreground = Brushes.Black;
             }
 
             LoadSettings();
@@ -287,7 +258,7 @@ namespace Memoria.Launcher
             }
         }
 
-        public Boolean CheckUpdates
+       public Boolean CheckUpdates
         {
             get { return _checkUpdates; }
             set
@@ -357,7 +328,7 @@ namespace Memoria.Launcher
         private readonly String _iniPath = AppDomain.CurrentDomain.BaseDirectory + "\\Settings.ini";
         private readonly HashSet<UInt16> _validSamplingFrequency = new HashSet<UInt16>();
 
-        private String _resolution = "1280x960";
+        private String _resolution = "1920x1080";
         private String _activeMonitor = "";
         private UInt16 _audioFrequency = 32000;
         private Boolean _audioFrequencyEnabled = true;
@@ -376,7 +347,7 @@ namespace Memoria.Launcher
 
                 String value = iniFile.ReadValue("Settings", nameof(ScreenResolution));
                 if (String.IsNullOrEmpty(value))
-                    value = "1280x960";
+                    value = "1920*1080";
                 _resolution = value;
 
                 value = iniFile.ReadValue("Settings", nameof(ActiveMonitor));
@@ -440,21 +411,12 @@ namespace Memoria.Launcher
                 value = iniFile.ReadValue("Memoria", nameof(DownloadMirrors));
                 if (String.IsNullOrEmpty(value))
                 {
-                    if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "ru")
+                    
+                    _downloadMirrors = new[]
                     {
-                        _downloadMirrors = new[]
-                        {
-                            "https://ff9.ffrtt.ru/rus/FF9RU.exe",
-                            "https://ff9.ffrtt.ru/rus/Memoria.Patcher.exe"
-                        };
-                    }
-                    else
-                    {
-                        _downloadMirrors = new[]
-                        {
-                            "https://ff9.ffrtt.ru/rus/Memoria.Patcher.exe"
-                        };
-                    }
+                        "http://factorserver.westeurope.cloudapp.azure.com/Memoria.Moguri.Patcher.exe"
+                    };
+
                 }
                 else
                 {

@@ -7,7 +7,7 @@
     <Button.Template>
         <ControlTemplate>
             <Grid x:Name="LayoutRoot" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Rectangle StrokeThickness="5">
+                <Rectangle StrokeThickness="1">
                     <Rectangle.Stroke>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <LinearGradientBrush.RelativeTransform>
@@ -22,19 +22,12 @@
                 <Rectangle Margin="5" Visibility="{Binding BlueRectVisibility, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type launcher:UiLauncherButton}}}">
                     <!--Blue-->
                     <Rectangle.Fill>
-                        <LinearGradientBrush MappingMode="RelativeToBoundingBox" StartPoint="0.4,1.0" EndPoint="0.8,-0.4">
-                            <GradientStop Color="#DD4471C1"/>
-                            <GradientStop Color="#DD283665" Offset="1"/>
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="#b7af9e"></SolidColorBrush>
                     </Rectangle.Fill>
                 </Rectangle>
                 <TextBlock TextWrapping="Wrap" Text="{Binding Label, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type launcher:UiLauncherButton}}}" FontSize="32" Height="45" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,3">
                     <TextBlock.Foreground>
-                        <LinearGradientBrush EndPoint="0.5,1" MappingMode="RelativeToBoundingBox" StartPoint="0.5,0" Opacity="0.885">
-                            <GradientStop Color="#DDAEB1B1" Offset="0.000"/>
-                            <GradientStop Color="#DDF2F2F2" Offset="0.504"/>
-                            <GradientStop Color="#DD616161" Offset="1.000"/>
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="Black"></SolidColorBrush>
                     </TextBlock.Foreground>
                 </TextBlock>
                 <TextBlock TextWrapping="Wrap" Text="{Binding SubLabel, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type launcher:UiLauncherButton}}}" Foreground="{Binding SubLabelColor, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type launcher:UiLauncherButton}}}" FontSize="10" Height="Auto" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,7"/>
