@@ -19,3 +19,15 @@ obj/
 *.sdf
 *.tlog
 *.meta
+
+References/*.dll
+!References/Memoria.MSBuild.dll
+!References/Microsoft.Build.Utilities.v4.0.dll
+!References/Microsoft.Build.Framework.dll
+
+Memoria.Injection/Release/*
+Memoria.Injection/Debug/*
+Memoria.Injection/x64/*
+Memoria.Interaction/Release/*
+Memoria.Interaction/Debug/*
+Memoria.Interaction/x64/*
