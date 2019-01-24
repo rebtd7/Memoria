@@ -6,8 +6,9 @@ using Memoria.Data;
 using Memoria.Database;
 using Memoria.Prime;
 using Memoria.Scenes;
-using Memoria.Test;
 using UnityEngine;
+using System.IO;
+using System.Text.RegularExpressions;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable NotAccessedField.Global
@@ -33,7 +34,22 @@ public partial class BattleHUD : UIScene
     public GameObject StatusContainer;
     public GameObject TransitionGameObject;
     public GameObject ScreenFadeGameObject;
-    
+    public UIRoot uiRoot;
+    public UIRect uiRect;
+    public Vector4 attVec;
+    public Vector4 sk1Vec;
+    public Vector4 sk2Vec;
+    public Vector4 itmVec;
+    public GameObject _abilityPanel;
+    public GameObject _itemPanel;
+    public Vector3 abilityPos;
+    public Vector3 itemPos;
+    public float left;
+    public float right;
+    public float top;
+    public float bottom;
+    public int panelFix;
+
     private void Update()
     {
         if (PersistenSingleton<UIManager>.Instance.QuitScene.isShowQuitUI || PersistenSingleton<UIManager>.Instance.State != UIManager.UIState.BattleHUD)
@@ -62,6 +78,7 @@ public partial class BattleHUD : UIScene
 
         SetHudVisibility(!UIManager.Input.GetKey(Control.Special));
         UpdateAndroidTV();
+        this.SetScaleOfUI();
 
         // TODO
         //if (true)
@@ -81,6 +98,182 @@ public partial class BattleHUD : UIScene
         //}
     }
     
+
+    public void SetScaleOfUI()
+    {
+        this.attVec = new Vector4(-175f, 112.5f, 345f, 112.5f);
+        this.sk1Vec = new Vector4(-175f, 0f, 345f, 112.5f);
+        this.sk2Vec = new Vector4(-175f, -112.5f, 345f, 112.5f);
+        this.itmVec = new Vector4(-175f, -225f, 345f, 112.5f);
+        this.uiRoot = this._abilityScrollList.gameObject.transform.root.GetComponent<UIRoot>();
+        this.uiRect = this.uiRoot.GetComponent<UIRect>();
+        this.uiRoot.scalingStyle = UIRoot.Scaling.Flexible;
+        this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height * float.Parse(Configuration.Graphics.BattleUIScale));
+        this.uiRect.SetRect(0f, 0f, (float)Screen.width * 3, (float)Screen.height * 3);
+        this.MoveUIObjectsForScale();
+        this.CommandPanelFix();
+        UIWidget[] componentsInChildren = this.AllMenuPanel.GetComponentsInChildren<UIWidget>();
+        checked
+        {
+            for (int i = 0; i < componentsInChildren.Length; i++)
+            {
+                componentsInChildren[i].MarkAsChanged();
+            }
+        }
+    }
+
+    public void SetCommandPSX()
+    {
+        if ((this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Left)) || UIManager.Input.GetKey(Control.Right))
+        {
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Left))
+            {
+                this._commandPanel.Defend.Button.gameObject.SetActive(true);
+            }
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Right))
+            {
+                this._commandPanel.Change.Button.gameObject.SetActive(true);
+            }
+            this._commandPanel.Attack.Button.gameObject.SetActive(false);
+            this._commandPanel.Defend.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
+            this._commandPanel.Change.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Left))
+            {
+                ButtonGroupState.ActiveButton = this._commandPanel.GetCommandButton(BattleHUD.CommandMenu.Defend);
+            }
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Right))
+            {
+                ButtonGroupState.ActiveButton = this._commandPanel.GetCommandButton(BattleHUD.CommandMenu.Change);
+            }
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
+            return;
+        }
+        this._commandPanel.Attack.Button.gameObject.SetActive(true);
+        ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
+        this._commandPanel.Change.Button.GetComponent<UIButton>().gameObject.SetActive(false);
+        this._commandPanel.Defend.Button.GetComponent<UIButton>().gameObject.SetActive(false);
+    }
+
+    public void MoveUIObjectsForScale()
+    {
+        if (!Configuration.Graphics.WidescreenSupport && UIManager.UIActualScreenSize.x / UIManager.UIActualScreenSize.y >= 1.6f)
+        {
+            this._abilityPanel.transform.SetX(-500f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._abilityPanel.transform.SetY(-350f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetX(-500f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetY(-350f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Widget.SetRect(0f, 0f, 350f, 450f);
+            this._commandPanel.Transform.SetX(-550f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Transform.SetY(-350f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Attack.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
+            this._commandPanel.Skill1.Button.GetComponent<UIWidget>().SetRect(this.sk1Vec.x, this.sk1Vec.y, this.sk1Vec.z, this.sk1Vec.w);
+            this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
+            this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
+            this.SetCommandPSX();
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse (Configuration.Graphics.BattleUIScale)+50, -350f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Transform.localPosition = new Vector3(500f * float.Parse (Configuration.Graphics.BattleUIScale), -400f * float.Parse (Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Widget.panel.RebuildAllDrawCalls();
+            this.BattleDialogGameObject.gameObject.transform.localPosition = new Vector3(0f, UIManager.UIActualScreenSize.y * 0.5f - 200f);
+            this.BattleDialogGameObject.gameObject.transform.localScale = new Vector3(1.1f, 1.1f);
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(34f, 0f), "Battle.Ability");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(34f, 0f), "Battle.Item");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(16f, 0f), "Battle.Target");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
+            ButtonGroupState.SetPointerLimitRectToGroup(this.AbilityPanel.GetComponent<UIWidget>(), this._abilityScrollList.cellHeight, "Battle.Ability");
+            ButtonGroupState.SetPointerLimitRectToGroup(this.ItemPanel.GetComponent<UIWidget>(), this._itemScrollList.cellHeight, "Battle.Item");
+            return;
+        }
+        if (Configuration.Graphics.WidescreenSupport && UIManager.UIActualScreenSize.x / UIManager.UIActualScreenSize.y >= 1.6f)
+        {
+            this._abilityPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) - UIManager.UIPillarBoxSize.x);
+            this._abilityPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) -  UIManager.UIPillarBoxSize.x);
+            this._itemPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Widget.SetRect(0f, 0f, 350f, 450f);
+            this._commandPanel.Transform.SetX(-550f * float.Parse(Configuration.Graphics.BattleUIScale) -  UIManager.UIPillarBoxSize.x);
+            this._commandPanel.Transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Attack.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
+            this._commandPanel.Skill1.Button.GetComponent<UIWidget>().SetRect(this.sk1Vec.x, this.sk1Vec.y, this.sk1Vec.z, this.sk1Vec.w);
+            this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
+            this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
+            this.SetCommandPSX();
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse(Configuration.Graphics.BattleUIScale) - UIManager.UIPillarBoxSize.x+50, -350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) +  UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) + UIManager.UIPillarBoxSize.x - 50, -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Widget.panel.RebuildAllDrawCalls();
+            this.BattleDialogGameObject.gameObject.transform.localPosition = new Vector3(0f, UIManager.UIActualScreenSize.y * 0.5f - 200f);
+            this.BattleDialogGameObject.gameObject.transform.localScale = new Vector3(1.1f, 1.1f);
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(34f, 0f), "Battle.Ability");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(34f, 0f), "Battle.Item");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(16f, 0f), "Battle.Target");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
+            ButtonGroupState.SetPointerLimitRectToGroup(this.AbilityPanel.GetComponent<UIWidget>(), this._abilityScrollList.cellHeight, "Battle.Ability");
+            ButtonGroupState.SetPointerLimitRectToGroup(this.ItemPanel.GetComponent<UIWidget>(), this._itemScrollList.cellHeight, "Battle.Item");
+            return;
+        }
+        if (UIManager.UIActualScreenSize.x / UIManager.UIActualScreenSize.y <= 1.6f)
+        {
+            this._abilityPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) );
+            this._abilityPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._itemPanel.transform.SetX(-500f * float.Parse(Configuration.Graphics.BattleUIScale) );
+            this._itemPanel.transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Widget.SetRect(0f, 0f, 350f, 450f);
+            this._commandPanel.Transform.SetX(-550f * float.Parse(Configuration.Graphics.BattleUIScale) );
+            this._commandPanel.Transform.SetY(-350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._commandPanel.Attack.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
+            this._commandPanel.Skill1.Button.GetComponent<UIWidget>().SetRect(this.sk1Vec.x, this.sk1Vec.y, this.sk1Vec.z, this.sk1Vec.w);
+            this._commandPanel.Skill2.Button.GetComponent<UIWidget>().SetRect(this.sk2Vec.x, this.sk2Vec.y, this.sk2Vec.z, this.sk2Vec.w);
+            this._commandPanel.Item.Button.GetComponent<UIWidget>().SetRect(this.itmVec.x, this.itmVec.y, this.itmVec.z, this.itmVec.w);
+            this.SetCommandPSX();
+            this.TargetPanel.transform.localPosition = new Vector3(-450f * float.Parse(Configuration.Graphics.BattleUIScale) , -350f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.HP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.MP.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.GoodStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._statusPanel.BadStatus.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Transform.localPosition = new Vector3(500f * float.Parse(Configuration.Graphics.BattleUIScale) , -400f * float.Parse(Configuration.Graphics.BattleUIScale));
+            this._partyDetail.Widget.panel.RebuildAllDrawCalls();
+            this.BattleDialogGameObject.gameObject.transform.localPosition = new Vector3(0f, UIManager.UIActualScreenSize.y * 0.5f - 200f);
+            this.BattleDialogGameObject.gameObject.transform.localScale = new Vector3(1.1f, 1.1f);
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(34f, 0f), "Battle.Ability");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(34f, 0f), "Battle.Item");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(16f, 0f), "Battle.Target");
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
+            ButtonGroupState.SetPointerLimitRectToGroup(this.AbilityPanel.GetComponent<UIWidget>(), this._abilityScrollList.cellHeight, "Battle.Ability");
+            ButtonGroupState.SetPointerLimitRectToGroup(this.ItemPanel.GetComponent<UIWidget>(), this._itemScrollList.cellHeight, "Battle.Item");
+        }
+    }
+
+    public void Start()
+    {
+        this.panelFix = 0;
+        this.left = UIManager.ScreenResUIScreenCoOrdinate.x;
+        this.right = UIManager.ScreenResUIScreenCoOrdinate.z;
+        this.bottom = UIManager.ScreenResUIScreenCoOrdinate.y;
+        this.top = UIManager.ScreenResUIScreenCoOrdinate.w;
+    }
+
+    public void CommandPanelFix()
+    {
+        if (this.panelFix == 0)
+        {
+            this._commandPanel.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Attack.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Skill1.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Skill2.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Item.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Defend.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Change.Widget.ResetAndUpdateAnchors();
+            this.panelFix = 1;
+        }
+    }
+
     private void Awake()
     {
         FadingComponent = ScreenFadeGameObject.GetExactComponent<HonoFading>();
@@ -115,6 +308,8 @@ public partial class BattleHUD : UIScene
         _statusPanel = new UI.ContainerStatus(this, StatusContainer);
         _itemScrollList = ItemPanel.GetChild(1).GetComponent<RecycleListPopulator>();
         _abilityScrollList = AbilityPanel.GetChild(1).GetComponent<RecycleListPopulator>();
+        this._abilityPanel = this._abilityScrollList.gameObject.GetParent();
+        this._itemPanel = this._itemScrollList.gameObject.GetParent();
         //_itemTransition = TransitionGameObject.GetChild(0).GetComponent<HonoTweenClipping>();
         //_abilityTransition = TransitionGameObject.GetChild(1).GetComponent<HonoTweenClipping>();
         //_targetTransition = TransitionGameObject.GetChild(2).GetComponent<HonoTweenClipping>();

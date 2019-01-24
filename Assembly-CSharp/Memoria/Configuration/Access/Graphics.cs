@@ -13,6 +13,7 @@ namespace Memoria
             public static Int32 BattleSwirlFrames => Instance._graphics.BattleSwirlFrames;
             public static Int32 SkipIntros = Instance._graphics.SkipIntros;
             public static Int32 GarnetHair => Instance._graphics.GarnetHair;
+            public static String BattleUIScale => Instance._graphics.BattleUIScale;
 
             public static Int32 TileSize => Instance._graphics.TileSize;
 
