@@ -36,6 +36,7 @@ Installation :
 10. Change the game font
 11. Export/import text resources
 12. Export/import audio resources (Ctrl+Alt+Shift+S to debug)
+13. Custom Size PSX Style Battle HUD/UI Value(Modify value in Memoria.ini)
 
 
 # Configuration:
