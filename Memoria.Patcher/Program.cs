@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net.Mime;
 using System.Reflection;
 using System.Text;
+using Fossil;
+using System.Security.Cryptography;
 
 namespace Memoria.Patcher
 {
@@ -118,6 +120,7 @@ namespace Memoria.Patcher
                 DateTime writeTimeUtc = new DateTime(br.ReadInt64(), DateTimeKind.Utc);
 
                 Boolean hasPlatform = false;
+                Boolean needPatching = false;
                 String[] pathParts = new String[br.ReadByte() + 1];
                 pathParts[0] = gameLocation.RootDirectory;
                 for (Int32 i = 1; i < pathParts.Length; i++)
@@ -146,6 +149,9 @@ namespace Memoria.Patcher
                         part = pathMap[id];
                         pathParts[i] = part;
                     }
+                    if (part == "resources_patch.diff")
+                        needPatching = true;
+                        
 
                     if (part == "{PLATFORM}")
                         hasPlatform = true;
@@ -154,25 +160,34 @@ namespace Memoria.Patcher
                 String outputPath = Path.Combine(pathParts);
 
                 if (hasPlatform)
-                {
+                {                  
                     if (Directory.Exists(gameLocation.ManagedPathX64))
                     {
                         if (Directory.Exists(gameLocation.ManagedPathX86))
                         {
                             String x64 = outputPath.Replace("{PLATFORM}", "x64");
                             String x86 = outputPath.Replace("{PLATFORM}", "x86");
-                            ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, x64, x86);
+                            if(needPatching)
+                                PatchFile(input, uncompressedSize, writeTimeUtc, progressHandler, x64, x86);
+                            else
+                                ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, x64, x86);
                         }
                         else
                         {
                             outputPath = outputPath.Replace("{PLATFORM}", "x86");
-                            ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, outputPath);
+                            if (needPatching)
+                                PatchFile(input, uncompressedSize, writeTimeUtc, progressHandler, outputPath);
+                            else
+                                ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, outputPath);
                         }
                     }
                     else if (Directory.Exists(gameLocation.ManagedPathX86))
                     {
                         outputPath = outputPath.Replace("{PLATFORM}", "x86");
-                        ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, outputPath);
+                        if (needPatching)
+                            PatchFile(input, uncompressedSize, writeTimeUtc, progressHandler, outputPath);
+                        else
+                            ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, outputPath); 
                     }
                     else
                     {
@@ -187,6 +202,55 @@ namespace Memoria.Patcher
                 leftSize -= uncompressedSize;
             }
         }
+
+        private static void PatchFile(GZipStream input, Int64 uncompressedSize, DateTime writeTimeUtc, ConsoleProgressHandler progressHandler, params String[] outputPaths)
+        {
+            byte[] buffer = new Byte[uncompressedSize];
+            List<FileStream> outputs = new List<FileStream>(outputPaths.Length);
+            try
+            {
+                foreach (String outputPath in outputPaths)
+                {
+                    String patch_outputPath = outputPath.Replace("_patch.diff", ".assets");
+                    BackupFile(patch_outputPath);
+
+                }
+                Int32 readed = input.Read(buffer, 0, (int)uncompressedSize);
+                progressHandler.IncrementProcessedSize(readed);
+            }
+            finally
+            {
+                foreach (String outputPath in outputPaths)
+                {
+                    
+                    String patch_outputPath = outputPath.Replace("_patch.diff", ".assets");
+                    Console.WriteLine("Patching {0}", patch_outputPath);
+                    
+
+                    using (var md5 = MD5.Create())
+                    {
+                        using (var stream = File.OpenRead(patch_outputPath.Replace(".assets", ".bak")))
+                        {
+                            var hash = md5.ComputeHash(stream);
+                            var hash_str = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                            if(hash_str != "4687cc936767974bc9933fb7c12667f7")
+                                throw new InvalidDataException("Cannot patch :Invalid hash for file: " + patch_outputPath.Replace(".assets", ".bak"));
+
+                        }
+                    }
+                    byte[] right = File.ReadAllBytes(patch_outputPath.Replace(".assets", ".bak"));
+                    byte[] outF = Fossil.Delta.Apply(right, buffer);
+                    File.WriteAllBytes(patch_outputPath, outF);
+                }
+            }
+
+            foreach (String outputPath in outputPaths)
+            {
+                String patch_outputPath = outputPath.Replace("_patch.diff", ".assets");
+                File.SetLastWriteTimeUtc(patch_outputPath, writeTimeUtc);
+             }
+        }
+
 
         private static void ExtractFile(GZipStream input, Int64 uncompressedSize, Byte[] buff, DateTime writeTimeUtc, ConsoleProgressHandler progressHandler, params String[] outputPaths)
         {
@@ -217,7 +281,24 @@ namespace Memoria.Patcher
                 File.SetLastWriteTimeUtc(outputPath, writeTimeUtc);
         }
 
-        private static readonly HashSet<String> _filesForBackup = new HashSet<String>(StringComparer.OrdinalIgnoreCase) {".exe", ".dll"};
+
+
+        private static readonly HashSet<String> _filesForBackup = new HashSet<String>(StringComparer.OrdinalIgnoreCase) {".exe", ".dll", ".assets"};
+
+
+        private static void BackupFile(String outputPath)
+        {
+            if (File.Exists(outputPath))
+            {
+                String extension = Path.GetExtension(outputPath);
+                if (_filesForBackup.Contains(extension))
+                {
+                      String backupPath = Path.ChangeExtension(outputPath, ".bak");
+                    if (!File.Exists(backupPath))
+                        File.Move(outputPath, backupPath);
+                }
+            }
+        }
 
         private static FileStream OverwrieFile(String outputPath)
         {
@@ -240,6 +321,8 @@ namespace Memoria.Patcher
 
             return File.Create(outputPath);
         }
+
+
 
         private static GameLocationInfo GetGameLocation(String[] args)
         {

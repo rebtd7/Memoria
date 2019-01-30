@@ -78,7 +78,11 @@ public partial class BattleHUD : UIScene
 
         SetHudVisibility(!UIManager.Input.GetKey(Control.Special));
         UpdateAndroidTV();
-        this.SetScaleOfUI();
+        if(Configuration.Graphics.BattleUIScaleEnabled)
+        {
+            this.SetScaleOfUI();
+        }
+        
 
         // TODO
         //if (true)
@@ -308,8 +312,11 @@ public partial class BattleHUD : UIScene
         _statusPanel = new UI.ContainerStatus(this, StatusContainer);
         _itemScrollList = ItemPanel.GetChild(1).GetComponent<RecycleListPopulator>();
         _abilityScrollList = AbilityPanel.GetChild(1).GetComponent<RecycleListPopulator>();
-        this._abilityPanel = this._abilityScrollList.gameObject.GetParent();
-        this._itemPanel = this._itemScrollList.gameObject.GetParent();
+        if (Configuration.Graphics.BattleUIScaleEnabled)
+        {
+            this._abilityPanel = this._abilityScrollList.gameObject.GetParent();
+            this._itemPanel = this._itemScrollList.gameObject.GetParent();
+        }
         //_itemTransition = TransitionGameObject.GetChild(0).GetComponent<HonoTweenClipping>();
         //_abilityTransition = TransitionGameObject.GetChild(1).GetComponent<HonoTweenClipping>();
         //_targetTransition = TransitionGameObject.GetChild(2).GetComponent<HonoTweenClipping>();

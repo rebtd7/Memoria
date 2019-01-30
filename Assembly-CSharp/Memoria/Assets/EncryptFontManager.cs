@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Memoria.Prime;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -37,7 +37,11 @@ namespace Memoria.Assets
                 Byte[] binary = ByteEncryption.Decryption(textAsset.bytes);
                 fontBundle = AssetBundle.CreateFromMemoryImmediate(binary);
             }
-            defaultFont = LoadFont(fontBundle.LoadAsset<Font>("TBUDGoStd-Bold"));
+            if (Configuration.Graphics.UseGarnetFont)
+                defaultFont = LoadFont(fontBundle.LoadAsset<Font>("Garnet"));
+            else
+                defaultFont = LoadFont(fontBundle.LoadAsset<Font>("TBUDGoStd-Bold"));
+
             fontBundle.Unload(false);
             Object.DestroyImmediate(fontBundle);
             fontBundle = null;

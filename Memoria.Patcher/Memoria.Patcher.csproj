@@ -67,6 +67,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleProgressHandler.cs" />
+    <Compile Include="FossilDelta\Delta.cs" />
+    <Compile Include="FossilDelta\Reader.cs" />
+    <Compile Include="FossilDelta\RollingHash.cs" />
+    <Compile Include="FossilDelta\Writer.cs" />
     <Compile Include="GameInfo\GameLocationSteamRegistryProvider.cs" />
     <Compile Include="GameInfo\GameLocationInfo.cs" />
     <Compile Include="Languages\Lang.cs" />
@@ -579,6 +583,7 @@
     </None>
     <None Include="StreamingAssets\Scripts\Project\Memoria.Scripts.csproj">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="StreamingAssets\Scripts\Project\Memoria.Scripts.sln">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

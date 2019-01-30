@@ -15,6 +15,9 @@ namespace Memoria
             public static Int32 GarnetHair => Instance._graphics.GarnetHair;
             public static String BattleUIScale => Instance._graphics.BattleUIScale;
 
+            public static Boolean BattleUIScaleEnabled => Instance._graphics.BattleUIScaleEnabled;
+            public static Boolean UseGarnetFont => Instance._graphics.UseGarnetFont;
+
             public static Int32 TileSize => Instance._graphics.TileSize;
 
             private static volatile Boolean _widescreenSupport = InitializeWidescreenSupport();
