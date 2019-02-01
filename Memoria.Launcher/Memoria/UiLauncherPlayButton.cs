@@ -62,8 +62,16 @@ namespace Memoria.Launcher
                     MessageBox.Show((Window)this.GetRootElement(), "Please select an available monitor.", "Information", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     return;
                 }
-
-                String[] strArray = GameSettings.ScreenResolution.Split('x');
+                String[] strArray;
+                if (GameSettings.ScreenResolution.Contains('x'))
+                    strArray = GameSettings.ScreenResolution.Split('x');
+                else if (GameSettings.ScreenResolution.Contains('*'))
+                    strArray = GameSettings.ScreenResolution.Split('*');
+                else
+                {
+                    MessageBox.Show((Window)this.GetRootElement(), "Please select an resolution.", "Information", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                    return;
+                }
                 Int32 screenWidth = Int32.Parse(strArray[0], CultureInfo.InvariantCulture);
                 Int32 screenHeight = Int32.Parse(strArray[1], CultureInfo.InvariantCulture);
 
