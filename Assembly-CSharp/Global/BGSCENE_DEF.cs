@@ -422,7 +422,7 @@ public class BGSCENE_DEF
 
     private void loadLocalizationInfo(String newName, String path)
     {
-        String symbol = Localization.GetSymbol();
+        /*String symbol = Localization.GetSymbol();
         if (symbol != "US")
         {
             FieldMapLocalizeAreaTitleInfo info = FieldMapInfo.localizeAreaTitle.GetInfo(newName);
@@ -434,7 +434,7 @@ public class BGSCENE_DEF
                     bGSCENE_DEF._LoadDummyEBG(this, path, newName, info, symbol);
                 }
             }
-        }
+        }*/
     }
 
     public void LoadEBG(FieldMap fieldMap, String path, String newName)
