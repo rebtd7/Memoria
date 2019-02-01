@@ -37,10 +37,13 @@ namespace Memoria.Assets
                 Byte[] binary = ByteEncryption.Decryption(textAsset.bytes);
                 fontBundle = AssetBundle.CreateFromMemoryImmediate(binary);
             }
-            if (Configuration.Graphics.UseGarnetFont)
+            if (Configuration.Graphics.UseGarnetFont && fontBundle.Contains("Garnet"))
                 defaultFont = LoadFont(fontBundle.LoadAsset<Font>("Garnet"));
+            
             else
                 defaultFont = LoadFont(fontBundle.LoadAsset<Font>("TBUDGoStd-Bold"));
+
+            
 
             fontBundle.Unload(false);
             Object.DestroyImmediate(fontBundle);
