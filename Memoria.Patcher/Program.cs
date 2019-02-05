@@ -205,6 +205,7 @@ namespace Memoria.Patcher
 
         private static void PatchFile(GZipStream input, Int64 uncompressedSize, DateTime writeTimeUtc, ConsoleProgressHandler progressHandler, params String[] outputPaths)
         {
+            
             byte[] buffer = new Byte[uncompressedSize];
             List<FileStream> outputs = new List<FileStream>(outputPaths.Length);
             try
@@ -225,8 +226,8 @@ namespace Memoria.Patcher
                     
                     String patch_outputPath = outputPath.Replace("_patch.diff", ".assets");
                     Console.WriteLine("Patching {0}", patch_outputPath);
-                    
 
+                    Boolean canPatch = true;
                     using (var md5 = MD5.Create())
                     {
                         using (var stream = File.OpenRead(patch_outputPath.Replace(".assets", ".bak")))
@@ -234,13 +235,23 @@ namespace Memoria.Patcher
                             var hash = md5.ComputeHash(stream);
                             var hash_str = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                             if(hash_str != "4687cc936767974bc9933fb7c12667f7")
-                                throw new InvalidDataException("Cannot patch :Invalid hash for file: " + patch_outputPath.Replace(".assets", ".bak"));
-
+                            {
+                                canPatch = false;
+                                Console.WriteLine("Cannot patch :Invalid hash for file: {0}", patch_outputPath.Replace(".assets", ".bak"));
+                            }
                         }
                     }
-                    byte[] right = File.ReadAllBytes(patch_outputPath.Replace(".assets", ".bak"));
-                    byte[] outF = Fossil.Delta.Apply(right, buffer);
-                    File.WriteAllBytes(patch_outputPath, outF);
+                    if(canPatch == true)
+                    { 
+                        byte[] right = File.ReadAllBytes(patch_outputPath.Replace(".assets", ".bak"));
+                        byte[] outF = Fossil.Delta.Apply(right, buffer);
+                        File.WriteAllBytes(patch_outputPath, outF);
+                    }
+                    else
+                    {
+                        if (!File.Exists(patch_outputPath))
+                            File.Copy(patch_outputPath.Replace(".assets", ".bak"), patch_outputPath);
+                    }
                 }
             }
 

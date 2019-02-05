@@ -15,17 +15,17 @@ namespace ConsoleApplication2
         {
 
             byte[] left = File.ReadAllBytes("d:\\FFIX_HD_MOD\\FONT_RESOURCES\\resources.ORIG");
-            byte[] right = File.ReadAllBytes("d:\\FFIX_HD_MOD\\FONT_RESOURCES\\resources.GARNET");
+            byte[] right = File.ReadAllBytes("d:\\FFIX_HD_MOD\\FONT_RESOURCES\\resources.GARNET_GFX");
 
 
+            
+
+
+
+            byte[] outF = Fossil.Delta.Create(left, right);
+
+            File.WriteAllBytes("d:\\workspace\\Memoria\\Output\\resources_patch.diff", outF);
             byte[] patch = File.ReadAllBytes("d:\\workspace\\Memoria\\Output\\resources_patch.diff");
-
-
-
-            //byte[] outF = Fossil.Delta.Create(left, right);
-
-            //File.WriteAllBytes("d:\\workspace\\Memoria\\Output\\resources_patch.diff", outF);
-
             var destinationSize = Fossil.Delta.OutputSize(patch);
 
             using (var md5 = MD5.Create())
@@ -35,8 +35,6 @@ namespace ConsoleApplication2
                     var hash = md5.ComputeHash(stream);
                     var hash_str = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
                     Console.WriteLine(hash_str);
-
-
                 }
 
             }
