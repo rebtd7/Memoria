@@ -75,7 +75,7 @@ public class UIManager : PersistenSingleton<UIManager>
     {
         get
         {
-            return new Vector4(-Screen.currentResolution.width / 2f, -Screen.currentResolution.height / 2f, Screen.currentResolution.width / 2f, Screen.currentResolution.height / 2f);
+            return new Vector4(-Screen.width / 2f, -Screen.height / 2f, Screen.width / 2f, Screen.height / 2f);
         }
     }
 

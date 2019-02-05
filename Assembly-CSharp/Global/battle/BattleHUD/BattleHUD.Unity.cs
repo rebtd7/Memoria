@@ -112,7 +112,7 @@ public partial class BattleHUD : UIScene
         this.uiRoot = this._abilityScrollList.gameObject.transform.root.GetComponent<UIRoot>();
         this.uiRect = this.uiRoot.GetComponent<UIRect>();
         this.uiRoot.scalingStyle = UIRoot.Scaling.Flexible;
-        this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height * float.Parse(Configuration.Graphics.BattleUIScale));
+        this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.height * float.Parse(Configuration.Graphics.BattleUIScale));
         this.uiRect.SetRect(0f, 0f, (float)Screen.width * 3, (float)Screen.height * 3);
         this.MoveUIObjectsForScale();
         this.CommandPanelFix();

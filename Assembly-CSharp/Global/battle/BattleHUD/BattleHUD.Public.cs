@@ -254,7 +254,7 @@ public partial class BattleHUD : UIScene
         if (Configuration.Graphics.BattleUIScaleEnabled)
         { 
             this.uiRoot.scalingStyle = UIRoot.Scaling.Constrained;
-            this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height);
+            this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.height);
         }
         Hide(() => PersistenSingleton<UIManager>.Instance.ChangeUIState(UIManager.UIState.BattleResult));
     }
@@ -268,7 +268,7 @@ public partial class BattleHUD : UIScene
         if (Configuration.Graphics.BattleUIScaleEnabled)
         { 
             this.uiRoot.scalingStyle = UIRoot.Scaling.Constrained;
-            this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.currentResolution.height);
+            this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.height);
         }
         Hide(() => PersistenSingleton<UIManager>.Instance.ChangeUIState(UIManager.UIState.GameOver));
     }
