@@ -9,7 +9,7 @@
       <launcher:GameSettingsControl x:Name="GameSettings" HorizontalAlignment="Right"  VerticalAlignment="Bottom" Margin="10,90"/>
       <launcher:UiLauncherExitButton VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10"/>
       <launcher:UiLauncherPlayButton x:Name="PlayButton" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"/>
-      <launcher:DonationControl x:Name="Donation" Visibility="Collapsed" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,90"/>
+
 
         <StackPanel x:Name="Links" Margin="5" Visibility="Collapsed" HorizontalAlignment="Left" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Orientation="Vertical">
             <TextBlock Margin="5" HorizontalAlignment="Left">

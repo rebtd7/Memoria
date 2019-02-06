@@ -71,7 +71,6 @@
     <Compile Include="Languages\XmlDocumentExm.cs" />
     <Compile Include="Languages\XmlHelper.cs" />
     <Compile Include="Memoria\UiTextBox.cs" />
-    <Compile Include="Memoria\DonationControl.cs" />
     <Compile Include="Memoria\ScreenInterrogatory.cs" />
     <Compile Include="Memoria\FrameworkElementExm.cs" />
     <Compile Include="App.cs" />
