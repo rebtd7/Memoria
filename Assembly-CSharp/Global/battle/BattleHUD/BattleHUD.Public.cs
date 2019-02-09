@@ -1,4 +1,4 @@
-﻿using Assets.Sources.Scripts.UI.Common;
+using Assets.Sources.Scripts.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -251,11 +251,6 @@ public partial class BattleHUD : UIScene
             return;
         _oneTime = false;
         Application.targetFrameRate = 60;
-        if (Configuration.Graphics.BattleUIScaleEnabled)
-        { 
-            this.uiRoot.scalingStyle = UIRoot.Scaling.Constrained;
-            this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.height);
-        }
         Hide(() => PersistenSingleton<UIManager>.Instance.ChangeUIState(UIManager.UIState.BattleResult));
     }
 
@@ -265,11 +260,6 @@ public partial class BattleHUD : UIScene
             return;
         _oneTime = false;
         Application.targetFrameRate = 60;
-        if (Configuration.Graphics.BattleUIScaleEnabled)
-        { 
-            this.uiRoot.scalingStyle = UIRoot.Scaling.Constrained;
-            this.uiRoot.minimumHeight = Mathf.RoundToInt((float)Screen.height);
-        }
         Hide(() => PersistenSingleton<UIManager>.Instance.ChangeUIState(UIManager.UIState.GameOver));
     }
 

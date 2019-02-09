@@ -50,39 +50,34 @@ namespace Memoria.Launcher
             DataContext = this;
 
             Thickness rowMargin = new Thickness(0, 8, 0, 3);
-            
-            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.ActiveMonitor), row: 0, col: 0, colSpan:2).Margin = rowMargin;
+
+            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.ActiveMonitor), row: 0, col: 0, colSpan: 2).Margin = rowMargin;
             UiComboBox monitor = AddUiElement(UiComboBoxFactory.Create(), row: 1, col: 0, rowSpan: 0, colSpan: 2);
             monitor.ItemsSource = GetAvailableMonitors();
-            monitor.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(ActiveMonitor)) {Mode = BindingMode.TwoWay});
+            monitor.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(ActiveMonitor)) { Mode = BindingMode.TwoWay });
             monitor.Margin = rowMargin;
 
             AddUiElement(UiTextBlockFactory.Create(Lang.Settings.Resolution), row: 2, col: 0).Margin = rowMargin;
             UiComboBox resolution = AddUiElement(UiComboBoxFactory.Create(), row: 3, col: 0);
             resolution.ItemsSource = EnumerateDisplaySettings().ToArray();
-            resolution.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(ScreenResolution)) {Mode = BindingMode.TwoWay});
+            resolution.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(ScreenResolution)) { Mode = BindingMode.TwoWay });
             resolution.Margin = rowMargin;
 
             UiCheckBox windowedCheckBox = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.Windowed, null), row: 3, col: 1);
             windowedCheckBox.Margin = rowMargin;
-            windowedCheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(Windowed)) {Mode = BindingMode.TwoWay});
+            windowedCheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(Windowed)) { Mode = BindingMode.TwoWay });
 
             AddUiElement(UiTextBlockFactory.Create(Lang.Settings.AudioSamplingFrequency), 4, 0, 0, 2).Margin = rowMargin;
             UiComboBox audio = AddUiElement(UiComboBoxFactory.Create(), 5, 0, 0, 2);
             audio.ItemStringFormat = Lang.Settings.AudioSamplingFrequencyFormat;
             audio.ItemsSource = EnumerateAudioSettings().ToArray();
-            audio.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(AudioFrequency)) {Mode = BindingMode.TwoWay});
-            audio.SetBinding(Selector.IsEnabledProperty, new Binding(nameof(AudioFrequencyEnabled)) {Mode = BindingMode.TwoWay});
+            audio.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(AudioFrequency)) { Mode = BindingMode.TwoWay });
+            audio.SetBinding(Selector.IsEnabledProperty, new Binding(nameof(AudioFrequencyEnabled)) { Mode = BindingMode.TwoWay });
             audio.Margin = rowMargin;
 
-            UiCheckBox x64 = AddUiElement(UiCheckBoxFactory.Create("X64", null), 6, 0);
-            x64.Margin = rowMargin;
-            x64.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(IsX64)) {Mode = BindingMode.TwoWay});
-            x64.SetBinding(ToggleButton.IsEnabledProperty, new Binding(nameof(IsX64Enabled)) {Mode = BindingMode.TwoWay});
-
-            UiCheckBox debuggableCheckBox = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.Debuggable, null), 6, 1);
+            UiCheckBox debuggableCheckBox = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.Debuggable, null), 6, 0);
             debuggableCheckBox.Margin = rowMargin;
-            debuggableCheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(IsDebugMode)) {Mode = BindingMode.TwoWay});
+            debuggableCheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(IsDebugMode)) { Mode = BindingMode.TwoWay });
 
             UiCheckBox checkUpdates = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.CheckUpdates, null), 7, 0, 0, 2);
             checkUpdates.Margin = new Thickness(0, 8, 0, 8);
@@ -156,7 +151,7 @@ namespace Memoria.Launcher
                         }
                         else if (x64 == true)
                         {
-                            MessageBox.Show((Window)this.GetRootElement(), Lang.SdLib.SuccessX64 , Lang.SdLib.Caption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                            MessageBox.Show((Window)this.GetRootElement(), Lang.SdLib.SuccessX64, Lang.SdLib.Caption, MessageBoxButton.OK, MessageBoxImage.Warning);
                             _audioFrequency = value;
                             OnPropertyChanged();
                         }
@@ -188,32 +183,6 @@ namespace Memoria.Launcher
                 if (_audioFrequencyEnabled != value)
                 {
                     _audioFrequencyEnabled = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public Boolean IsX64
-        {
-            get { return _isX64; }
-            set
-            {
-                if (_isX64 != value)
-                {
-                    _isX64 = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        public Boolean IsX64Enabled
-        {
-            get { return _isX64Enabled; }
-            set
-            {
-                if (_isX64Enabled != value)
-                {
-                    _isX64Enabled = value;
                     OnPropertyChanged();
                 }
             }
@@ -258,7 +227,7 @@ namespace Memoria.Launcher
             }
         }
 
-       public Boolean CheckUpdates
+        public Boolean CheckUpdates
         {
             get { return _checkUpdates; }
             set
@@ -298,23 +267,20 @@ namespace Memoria.Launcher
                     case nameof(IsDebugMode):
                         iniFile.WriteValue("Memoria", propertyName, (IsDebugMode).ToString());
                         break;
-                    case nameof(IsX64):
-                        iniFile.WriteValue("Memoria", propertyName, (IsX64).ToString());
-                        break;
                     case nameof(CheckUpdates):
-                    {
-                        iniFile.WriteValue("Memoria", propertyName, (CheckUpdates).ToString());
-                        if (CheckUpdates)
                         {
-                            using (ManualResetEvent evt = new ManualResetEvent(false))
+                            iniFile.WriteValue("Memoria", propertyName, (CheckUpdates).ToString());
+                            if (CheckUpdates)
                             {
-                                Window root = this.GetRootElement() as Window;
-                                if (root != null)
-                                    await UiLauncherPlayButton.CheckUpdates(root, evt, this);
+                                using (ManualResetEvent evt = new ManualResetEvent(false))
+                                {
+                                    Window root = this.GetRootElement() as Window;
+                                    if (root != null)
+                                        await UiLauncherPlayButton.CheckUpdates(root, evt, this);
+                                }
                             }
+                            break;
                         }
-                        break;
-                    }
                 }
             }
             catch (Exception ex)
@@ -333,8 +299,6 @@ namespace Memoria.Launcher
         private UInt16 _audioFrequency = 32000;
         private Boolean _audioFrequencyEnabled = true;
         private Boolean _isWindowMode = true;
-        private Boolean _isX64 = true;
-        private Boolean _isX64Enabled = true;
         private Boolean _isDebugMode;
         private Boolean _checkUpdates;
         private String[] _downloadMirrors;
@@ -360,22 +324,6 @@ namespace Memoria.Launcher
                 if (!Boolean.TryParse(value, out _isWindowMode))
                     _isWindowMode = true;
 
-                value = iniFile.ReadValue("Memoria", nameof(IsX64));
-                if (String.IsNullOrEmpty(value))
-                    value = "true";
-                if (!Boolean.TryParse(value, out _isX64))
-                    _isX64 = true;
-
-                if (!Environment.Is64BitOperatingSystem || !Directory.Exists("x64"))
-                {
-                    _isX64 = false;
-                    _isX64Enabled = false;
-                }
-                else if (!Directory.Exists("x86"))
-                {
-                    _isX64 = true;
-                    _isX64Enabled = false;
-                }
 
                 UInt16 x64SamplingFrequency;
                 UInt16 x86SamplingFrequency;
@@ -411,7 +359,7 @@ namespace Memoria.Launcher
                 value = iniFile.ReadValue("Memoria", nameof(DownloadMirrors));
                 if (String.IsNullOrEmpty(value))
                 {
-                    
+
                     _downloadMirrors = new[]
                     {
                         "http://factorserver.westeurope.cloudapp.azure.com/Memoria.Moguri.Patcher.exe"
@@ -428,8 +376,6 @@ namespace Memoria.Launcher
                 OnPropertyChanged(nameof(Windowed));
                 OnPropertyChanged(nameof(AudioFrequency));
                 OnPropertyChanged(nameof(AudioFrequencyEnabled));
-                OnPropertyChanged(nameof(IsX64));
-                OnPropertyChanged(nameof(IsX64Enabled));
                 OnPropertyChanged(nameof(IsDebugMode));
                 OnPropertyChanged(nameof(CheckUpdates));
                 OnPropertyChanged(nameof(DownloadMirrors));

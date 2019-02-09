@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Memoria;
@@ -39,7 +39,7 @@ using System.Linq;
 
 public class BGSCENE_DEF
 {
-    private static readonly Int32 TileSize = Configuration.Graphics.TileSize;
+    private static readonly Int32 TileSize = 64;
 
 
     public UInt16 sceneLength;

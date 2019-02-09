@@ -75,7 +75,7 @@ namespace Memoria.Launcher
                 Int32 screenWidth = Int32.Parse(strArray[0], CultureInfo.InvariantCulture);
                 Int32 screenHeight = Int32.Parse(strArray[1], CultureInfo.InvariantCulture);
 
-                String directoyPath = ".\\" + (GameSettings.IsX64 ? "x64" : "x86");
+                String directoyPath = ".\\x64";
 
                 String executablePath = directoyPath + "\\FF9.exe";
                 if (GameSettings.IsDebugMode)
@@ -126,7 +126,7 @@ namespace Memoria.Launcher
                 await Task.Factory.StartNew(
                     () =>
                     {
-                        ProcessStartInfo gameStartInfo = new ProcessStartInfo(executablePath, arguments) {UseShellExecute = false};
+                        ProcessStartInfo gameStartInfo = new ProcessStartInfo(executablePath, arguments) {UseShellExecute = false };
                         if (GameSettings.IsDebugMode)
                             gameStartInfo.EnvironmentVariables["UNITY_GIVE_CHANCE_TO_ATTACH_DEBUGGER"] = "1";
 
@@ -138,7 +138,7 @@ namespace Memoria.Launcher
                             Process debuggerProcess = Process.GetProcesses().FirstOrDefault(p => p.ProcessName.StartsWith("Memoria.Debugger"));
                             if (debuggerProcess == null)
                             {
-                                String debuggerDirectory = Path.Combine(Path.GetFullPath("Debugger"), (GameSettings.IsX64 ? "x64" : "x86"));
+                                String debuggerDirectory = Path.Combine(Path.GetFullPath("Debugger"), "x64");
                                 String debuggerPath = Path.Combine(debuggerDirectory, "Memoria.Debugger.exe");
                                 String debuggerArgs = "10000"; // Timeout: 10 seconds
                                 ProcessStartInfo debuggerStartInfo = new ProcessStartInfo(debuggerPath, debuggerArgs) {WorkingDirectory = debuggerDirectory};

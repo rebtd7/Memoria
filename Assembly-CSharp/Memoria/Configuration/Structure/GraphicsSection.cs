@@ -11,11 +11,8 @@ namespace Memoria
             public readonly IniValue<Int32> MovieFPS;
             public readonly IniValue<Int32> BattleSwirlFrames;
             public readonly IniValue<Boolean> WidescreenSupport;
-            public readonly IniValue<Int32> TileSize;
             public readonly IniValue<Int32> SkipIntros;
             public readonly IniValue<Int32> GarnetHair;
-            public readonly IniValue<String> BattleUIScale;
-            public readonly IniValue<Boolean> BattleUIScaleEnabled;
             public readonly IniValue<Boolean> UseGarnetFont;
 
             public GraphicsSection() : base(nameof(GraphicsSection), false)
@@ -24,11 +21,8 @@ namespace Memoria
                 MovieFPS = BindInt32(nameof(MovieFPS), 15);
                 BattleSwirlFrames = BindInt32(nameof(BattleSwirlFrames), 115);
                 WidescreenSupport = BindBoolean(nameof(WidescreenSupport), true);
-                TileSize = BindInt32(nameof(TileSize), 64);
                 SkipIntros = BindInt32(nameof(SkipIntros), 0);
                 GarnetHair = BindInt32(nameof(GarnetHair), 0);
-                BattleUIScale = BindString(nameof(BattleUIScale), "1");
-                BattleUIScaleEnabled = BindBoolean(nameof(BattleUIScaleEnabled), false);
                 UseGarnetFont = BindBoolean(nameof(UseGarnetFont), true);
             }
         }

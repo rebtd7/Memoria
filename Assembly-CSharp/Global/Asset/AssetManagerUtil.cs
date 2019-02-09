@@ -1,5 +1,8 @@
-﻿using System;
+using System;
+using Memoria;
+using Memoria.Prime;
 using UnityEngine;
+
 using Object = System.Object;
 
 public static class AssetManagerUtil
@@ -7,11 +10,23 @@ public static class AssetManagerUtil
 	public static String GetStreamingAssetsPath()
 	{
 		if (Application.platform == RuntimePlatform.WindowsPlayer)
-		{
-			return "./StreamingAssets";
-		}
-		return Application.streamingAssetsPath;
+        {
+            string path = GetPath();
+            Log.Message("[assetInterceptor] loading from directory [{0}]", path);
+            if (path == null || (System.IO.Directory.Exists(path)) == false)
+            {
+                Log.Warning("[assetInterceptor] [{0}] not found, loading from default directory", path);
+                path = "./StreamingAssets";
+            }
+            return path;
+        }
+        return Application.streamingAssetsPath;
 	}
+
+    private static string GetPath()
+    {
+        return Configuration.System.Path;
+    }
 
     public static string GetPersistentDataPath()
     {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -39,6 +39,7 @@ namespace Memoria
             {
                 EnsureConfigurationFileExists();
                 IniReader reader = new IniReader(ConfigurationFileName);
+                Log.Message("Loading configuration {0}", ConfigurationFileName);
                 reader.Read(Instance);
                 Watcher.EnableRaisingEvents = true;
             }

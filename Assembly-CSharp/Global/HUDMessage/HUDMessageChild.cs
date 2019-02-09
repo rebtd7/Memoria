@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using Memoria;
 
@@ -64,7 +64,7 @@ public class HUDMessageChild : MonoBehaviour
 		if (!this.isInitialized)
 		{
 			this.myTransform = base.transform;
-            myTransform.localScale = Vector3.one * float.Parse(Configuration.Graphics.BattleUIScale);
+            myTransform.localScale = Vector3.one;
 			this.parentGameObject = this.myTransform.parent.gameObject;
 			this.label = base.GetComponent<UILabel>();
 			this.uiWidget = base.GetComponent<UIWidget>();

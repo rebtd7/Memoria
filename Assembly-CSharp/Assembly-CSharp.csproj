@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Assembly-CSharp</RootNamespace>
     <AssemblyName>Assembly-CSharp</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -264,6 +264,7 @@
     <Compile Include="Memoria\Configuration\Access\Icons.cs" />
     <Compile Include="Memoria\Configuration\Access\Hacks.cs" />
     <Compile Include="Memoria\Configuration\Access\Import.cs" />
+    <Compile Include="Memoria\Configuration\Access\System.cs" />
     <Compile Include="Memoria\Configuration\Access\TetraMaster.cs" />
     <Compile Include="Memoria\Configuration\Structure\CheatsSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\AnalogControlSection.cs" />
@@ -276,6 +277,7 @@
     <Compile Include="Memoria\Configuration\Structure\DebugSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\FixesSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\HacksSection.cs" />
+    <Compile Include="Memoria\Configuration\Structure\SystemSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\TetraMasterSection.cs" />
     <Compile Include="Memoria\Field\TileMap.cs" />
     <Compile Include="Memoria\Field\TileCoordinates.cs" />

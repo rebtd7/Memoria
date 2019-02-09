@@ -66,10 +66,11 @@ namespace Memoria.Patcher
                 Console.WriteLine("---------------------------");
                 Console.WriteLine(ex);
                 Console.WriteLine("---------------------------");
+                Console.WriteLine(Lang.Message.Done.PressEnterToExit);
+                Console.ReadLine();
             }
 
-            Console.WriteLine(Lang.Message.Done.PressEnterToExit);
-            Console.ReadLine();
+            
         }
 
         private static void Run(String[] args)
@@ -163,32 +164,13 @@ namespace Memoria.Patcher
                 {                  
                     if (Directory.Exists(gameLocation.ManagedPathX64))
                     {
-                        if (Directory.Exists(gameLocation.ManagedPathX86))
-                        {
-                            String x64 = outputPath.Replace("{PLATFORM}", "x64");
-                            String x86 = outputPath.Replace("{PLATFORM}", "x86");
-                            if(needPatching)
-                                PatchFile(input, uncompressedSize, writeTimeUtc, progressHandler, x64, x86);
-                            else
-                                ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, x64, x86);
-                        }
-                        else
-                        {
-                            outputPath = outputPath.Replace("{PLATFORM}", "x86");
-                            if (needPatching)
-                                PatchFile(input, uncompressedSize, writeTimeUtc, progressHandler, outputPath);
-                            else
-                                ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, outputPath);
-                        }
-                    }
-                    else if (Directory.Exists(gameLocation.ManagedPathX86))
-                    {
-                        outputPath = outputPath.Replace("{PLATFORM}", "x86");
+                        outputPath = outputPath.Replace("{PLATFORM}", "x64");
                         if (needPatching)
                             PatchFile(input, uncompressedSize, writeTimeUtc, progressHandler, outputPath);
                         else
-                            ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, outputPath); 
+                            ExtractFile(input, uncompressedSize, buff, writeTimeUtc, progressHandler, outputPath);
                     }
+                    
                     else
                     {
                         progressHandler.IncrementProcessedSize(uncompressedSize);
