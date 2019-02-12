@@ -21,6 +21,17 @@ namespace Memoria.Launcher
             TryLoadImage();
 
             PlayButton.GameSettings = GameSettings;
+            CheckForUpdates();
+        }
+
+        private async void CheckForUpdates()
+        {
+            using (System.Threading.ManualResetEvent evt = new System.Threading.ManualResetEvent(false))
+            {
+                Window root = this.GetRootElement() as Window;
+                if (root != null)
+                    await UiLauncherPlayButton.CheckUpdates(root, evt, PlayButton.GameSettings);
+            }
         }
 
         private void TryLoadImage()

@@ -159,86 +159,22 @@ namespace Memoria.Launcher
         internal static async Task<Boolean> CheckUpdates(Window rootElement, ManualResetEvent cancelEvent, GameSettingsControl gameSettings)
         {
             String applicationPath = Path.GetFullPath(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path));
-            String applicationDirectory = Path.GetDirectoryName(applicationPath);
-            LinkedList<HttpFileInfo> updateInfo = await FindUpdatesInfo(applicationDirectory, cancelEvent, gameSettings);
-            if (updateInfo.Count == 0)
-                return false;
+            String installationFolder = gameSettings.MoguriFolder;
+            string fullPath = Path.Combine(installationFolder, "updater.exe") ;
 
-            StringBuilder messageSb = new StringBuilder(256);
-            messageSb.AppendLine(Lang.Message.Question.NewVersionIsAvailable);
-            Int64 size = 0;
-            foreach (HttpFileInfo info in updateInfo)
+            int returnCode = await RunProcessAsync(fullPath, "/justcheck");
+
+            if(returnCode == 0)
             {
-                size += info.ContentLength;
-                messageSb.AppendLine($"{info.TargetName} - {info.LastModified} ({UiProgressWindow.FormatValue(info.ContentLength)})");
-            }
-
-            if (MessageBox.Show(rootElement, messageSb.ToString(), Lang.Message.Question.Title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-            {
-                List<String> success = new List<String>(updateInfo.Count);
-                List<String> failed = new List<String>();
-
-                using (UiProgressWindow progress = new UiProgressWindow("Downloading..."))
+                StringBuilder messageSb = new StringBuilder(256);
+                messageSb.AppendLine(Lang.Message.Question.NewVersionIsAvailable);
+            
+                if (MessageBox.Show(rootElement, messageSb.ToString(), Lang.Message.Question.Title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
-                    progress.SetTotal(size);
-                    progress.Show();
-
-                    Downloader downloader = new Downloader(cancelEvent);
-                    downloader.DownloadProgress += progress.Incremented;
-
-                    foreach (HttpFileInfo info in updateInfo)
-                    {
-                        String filePath = info.TargetPath;
-
-                        try
-                        {
-                            await downloader.Download(info.Url, filePath);
-                            File.SetLastWriteTime(filePath, info.LastModified);
-
-                            success.Add(filePath);
-                        }
-                        catch
-                        {
-                            failed.Add(filePath);
-                        }
-                    }
-                }
-
-                if (failed.Count > 0)
-                {
-                    MessageBox.Show(rootElement,
-                        "Failed to download:" + Environment.NewLine + String.Join(Environment.NewLine, failed),
-                        Lang.Message.Error.Title,
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
-                }
-
-                if (success.Count > 0)
-                {
-                    String main = success.First();
-                    if (success.Count > 1)
-                    {
-                        StringBuilder sb = new StringBuilder(256);
-                        foreach (String path in success.Skip(1))
-                        {
-                            sb.Append('"');
-                            sb.Append(path);
-                            sb.Append('"');
-                        }
-
-                        Process.Start(main, $@"-update ""{applicationPath}"" ""{Process.GetCurrentProcess().Id}"" {sb}");
-                    }
-                    else
-                    {
-                        Process.Start(main, $@"-update ""{applicationPath}"" ""{Process.GetCurrentProcess().Id}""");
-                    }
-
+                    Process.Start(fullPath, "/checknow");
                     Environment.Exit(2);
                     return true;
-                }
-                else
-                {
-                    return false;
+
                 }
             }
 
@@ -246,56 +182,31 @@ namespace Memoria.Launcher
         }
 
 
-
-        private static async Task<LinkedList<HttpFileInfo>> FindUpdatesInfo(String applicationDirectory, ManualResetEvent cancelEvent, GameSettingsControl gameSettings)
+        private static Task<int> RunProcessAsync(string fileName, string parameter)
         {
-            Downloader downloader = new Downloader(cancelEvent);
-            String[] urls = gameSettings.DownloadMirrors;
+            var tcs = new TaskCompletionSource<int>();
 
-            LinkedList<HttpFileInfo> list = new LinkedList<HttpFileInfo>();
-            Dictionary<String, LinkedListNode<HttpFileInfo>> dic = new Dictionary<String, LinkedListNode<HttpFileInfo>>(urls.Length);
-
-            foreach (String url in urls)
+            var process = new Process
             {
-                try
-                {
-                    HttpFileInfo fileInfo = await downloader.GetRemoteFileInfo(url);
-                    if (fileInfo == null)
-                        continue;
+                StartInfo = { FileName = fileName, Arguments = parameter },
+                EnableRaisingEvents = true
+            };
 
-                    Int32 separatorIndex = url.LastIndexOf('/');
-                    String remoteFileName = url.Substring(separatorIndex + 1);
-                    fileInfo.TargetName = remoteFileName;
-                    fileInfo.TargetPath = Path.Combine(applicationDirectory, remoteFileName);
+            process.Exited += (sender, args) =>
+            {
+                tcs.SetResult(process.ExitCode);
+                process.Dispose();
+            };
 
-                    LinkedListNode<HttpFileInfo> node;
-                    if (!dic.TryGetValue(fileInfo.TargetPath, out node) && File.Exists(fileInfo.TargetPath) && File.GetLastWriteTime(fileInfo.TargetPath) >= fileInfo.LastModified)
-                        continue;
+            process.Start();
 
-                    if (node != null)
-                    {
-                        if (node.Value.LastModified >= fileInfo.LastModified)
-                            continue;
-
-                        LinkedListNode<HttpFileInfo> newNode = list.AddBefore(node, fileInfo);
-                        list.Remove(node);
-                        dic[fileInfo.TargetPath] = newNode;
-                    }
-                    else
-                    {
-                        LinkedListNode<HttpFileInfo> newNode = list.AddLast(fileInfo);
-                        dic.Add(fileInfo.TargetPath, newNode);
-                    }
-                }
-                catch
-                {
-                    // Do nothing
-                }
-            }
-
-            return list;;
+            return tcs.Task;
         }
+
+
+
     }
+
 
     public sealed class HttpFileInfo
     {

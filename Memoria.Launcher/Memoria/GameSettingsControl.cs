@@ -119,6 +119,19 @@ namespace Memoria.Launcher
             }
         }
 
+        public String MoguriFolder
+        {
+            get { return _moguriFolder; }
+            set
+            {
+                if (_moguriFolder != value)
+                {
+                    _moguriFolder = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public String ActiveMonitor
         {
             get { return _activeMonitor; }
@@ -214,19 +227,6 @@ namespace Memoria.Launcher
             }
         }
 
-        public String[] DownloadMirrors
-        {
-            get { return _downloadMirrors; }
-            set
-            {
-                if (_downloadMirrors != value)
-                {
-                    _downloadMirrors = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
         public Boolean CheckUpdates
         {
             get { return _checkUpdates; }
@@ -301,7 +301,7 @@ namespace Memoria.Launcher
         private Boolean _isWindowMode = true;
         private Boolean _isDebugMode;
         private Boolean _checkUpdates;
-        private String[] _downloadMirrors;
+        private String _moguriFolder = "";
 
         private void LoadSettings()
         {
@@ -323,6 +323,7 @@ namespace Memoria.Launcher
                     value = "true";
                 if (!Boolean.TryParse(value, out _isWindowMode))
                     _isWindowMode = true;
+
 
 
                 UInt16 x64SamplingFrequency;
@@ -356,29 +357,22 @@ namespace Memoria.Launcher
                 if (!Boolean.TryParse(value, out _checkUpdates))
                     _checkUpdates = false;
 
-                value = iniFile.ReadValue("Memoria", nameof(DownloadMirrors));
-                if (String.IsNullOrEmpty(value))
-                {
+                value = iniFile.ReadValue("Memoria", nameof(MoguriFolder));
+                if (!String.IsNullOrEmpty(value))
+                    _moguriFolder = value;
 
-                    _downloadMirrors = new[]
-                    {
-                        "http://factorserver.westeurope.cloudapp.azure.com/Memoria.Moguri.Patcher.exe"
-                    };
+                
 
-                }
-                else
-                {
-                    _downloadMirrors = value.Split(',');
-                }
 
                 OnPropertyChanged(nameof(ScreenResolution));
+                OnPropertyChanged(nameof(MoguriFolder));
                 OnPropertyChanged(nameof(ActiveMonitor));
                 OnPropertyChanged(nameof(Windowed));
                 OnPropertyChanged(nameof(AudioFrequency));
                 OnPropertyChanged(nameof(AudioFrequencyEnabled));
                 OnPropertyChanged(nameof(IsDebugMode));
                 OnPropertyChanged(nameof(CheckUpdates));
-                OnPropertyChanged(nameof(DownloadMirrors));
+
             }
             catch (Exception ex)
             {
