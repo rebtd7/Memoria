@@ -244,8 +244,7 @@ public class WMScriptDirector : HonoBehavior
 		{
 			if (objList2.obj.cid == 4)
 			{
-				WMActor wmActor2 = ((Actor)objList2.obj).wmActor;
-				wmActor2.LateUpdateFunction();
+                ((Actor)objList2.obj).wmActor.LateUpdateFunction();
 			}
 		}
 	}
