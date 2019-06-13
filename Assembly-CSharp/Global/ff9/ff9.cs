@@ -7531,11 +7531,19 @@ public static class ff9
 
 	public static void w_musicPlay(UInt16 musicno)
 	{
-		Byte b = ff9.byte_gEventGlobal(104);
+        AllSoundDispatchPlayer allSoundDispatchPlayer = SoundLib.GetAllSoundDispatchPlayer();
+        Byte b = ff9.byte_gEventGlobal(104);
 		ff9.w_musicPlayNo = ff9.w_musicChoice(musicno);
 		ff9.w_musicFirstPlay = 1;
 		Int32 currentMusicId = FF9Snd.GetCurrentMusicId();
-		FF9Snd.ff9wldsnd_song_play(ff9.w_musicPlayNo);
+        if (allSoundDispatchPlayer.GetSuspendSongID() != -1)
+        {
+            FF9Snd.ff9wldsnd_song_restore();
+        }
+        else
+        {
+            FF9Snd.ff9wldsnd_song_play(ff9.w_musicPlayNo);
+        }
 		FF9Snd.LatestWorldPlayedSong = ff9.w_musicPlayNo;
 		Int32 currentMusicId2 = FF9Snd.GetCurrentMusicId();
 		if (b == 0)

@@ -200,6 +200,13 @@ public class AllSoundDispatchPlayer : SoundPlayer
 			{
 				this.CreateSound(soundProfile);
 				soundProfile.SoundVolume = AllSoundDispatchPlayer.NormalizeVolume(vol);
+
+				if (this.suspendSongID != -1 && this.suspendSongID == soundProfile.SoundIndex)
+				{
+					int offsetTimeMSec = Convert.ToInt32(this.suspendSongTimeMs);
+					ISdLibAPIProxy.Instance.SdSoundSystem_SoundCtrl_Start(soundProfile.SoundID, offsetTimeMSec);
+				}
+
 				ISdLibAPIProxy.Instance.SdSoundSystem_SoundCtrl_Start(soundProfile.SoundID, 0);
 				ISdLibAPIProxy.Instance.SdSoundSystem_SoundCtrl_SetVolume(soundProfile.SoundID, soundProfile.SoundVolume * this.musicPlayerVolume, 0);
 				this.currentMusicID = ObjNo;
@@ -241,8 +248,10 @@ public class AllSoundDispatchPlayer : SoundPlayer
 				ISdLibAPIProxy.Instance.SdSoundSystem_SoundCtrl_Stop(soundProfile.SoundID, 0);
 				this.suspendSongID = ObjNo;
 				this.suspendSongVolume = AllSoundDispatchPlayer.ReverseNormalizeVolume(soundProfile.SoundVolume);
-			}
-		});
+                this.suspendSongTimeMs = soundProfile.StartPlayTime;
+
+            }
+        });
 	}
 
 	public void FF9SOUND_SONG_RESTORE()
@@ -1307,7 +1316,21 @@ public class AllSoundDispatchPlayer : SoundPlayer
 
 	public override void Update()
 	{
-		foreach (AllSoundDispatchPlayer.PlayingSfx playingSfx in this.sfxChanels)
+        if (this.currentMusicID != -1)
+        {
+            this.GetSoundProfileIfExist(this.currentMusicID, SoundProfileType.Music, delegate (SoundProfile soundProfile)            {
+                if (soundProfile != null)
+                {
+                    soundProfile.StartPlayTime += 20f;                    if (soundProfile.StartPlayTime > 245000f)
+                    {
+                        soundProfile.StartPlayTime %= 245000f;
+                    }
+                }
+
+            });
+        }
+
+        foreach (AllSoundDispatchPlayer.PlayingSfx playingSfx in this.sfxChanels)
 		{
 			if (ISdLibAPIProxy.Instance.SdSoundSystem_SoundCtrl_IsExist(playingSfx.SoundID) == 0)
 			{
@@ -1373,7 +1396,9 @@ public class AllSoundDispatchPlayer : SoundPlayer
 
 	private Int32 suspendSongVolume;
 
-	private List<AllSoundDispatchPlayer.PlayingSfx> sfxChanels = new List<AllSoundDispatchPlayer.PlayingSfx>();
+    private float suspendSongTimeMs;
+
+    private List<AllSoundDispatchPlayer.PlayingSfx> sfxChanels = new List<AllSoundDispatchPlayer.PlayingSfx>();
 
 	public AllSoundDispatchPlayer.OnSndEffectResPlay onSndEffectResPlay;
 
