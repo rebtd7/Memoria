@@ -422,14 +422,14 @@ public class BGSCENE_DEF
 
     private void loadLocalizationInfo(String newName, String path)
     {
-        /*String symbol = Localization.GetSymbol();
+        String symbol = Localization.GetSymbol();
         if (symbol == "US")
             return;
-        
+
         FieldMapLocalizeAreaTitleInfo info = FieldMapInfo.localizeAreaTitle.GetInfo(newName);
         if (info == null)
             return;
-        
+
         if (symbol != "UK" || info.hasUK)
         {
             BGSCENE_DEF bGSCENE_DEF = new BGSCENE_DEF(this.useUpscaleFM);
