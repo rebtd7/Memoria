@@ -15,6 +15,7 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FrameworkPathOverride>$(SolutionDir)\References\</FrameworkPathOverride>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -239,6 +240,7 @@
     <Compile Include="Global\Card\CardPreviewUI.cs" />
     <Compile Include="Global\Card\CardUI.cs" />
     <Compile Include="Global\ff9\State\FF9StateGlobal.FrogHandler.cs" />
+    <Compile Include="Global\Field\Map\NarrowMapList.cs" />
     <Compile Include="Global\TileSystem\TileSystem.cs" />
     <Compile Include="Memoria\Application\PlayerWindow.cs" />
     <Compile Include="Memoria\Assets\Import\Fields\AtlasImport.cs" />
@@ -254,6 +256,7 @@
     <Compile Include="Memoria\Assets\Text\CharacterNamesFormatter.cs" />
     <Compile Include="Memoria\Assets\Text\Export\CharacterNamesExporter.cs" />
     <Compile Include="Memoria\Configuration\Access\Cheats.cs" />
+    <Compile Include="Memoria\Configuration\Access\Audio.cs" />
     <Compile Include="Memoria\Configuration\Access\Control.cs" />
     <Compile Include="Memoria\Configuration\Access\Debug.cs" />
     <Compile Include="Memoria\Configuration\Access\Export.cs" />
@@ -266,8 +269,10 @@
     <Compile Include="Memoria\Configuration\Access\Import.cs" />
     <Compile Include="Memoria\Configuration\Access\System.cs" />
     <Compile Include="Memoria\Configuration\Access\TetraMaster.cs" />
+    <Compile Include="Memoria\Configuration\MemoriaConfigurationMenu.cs" />
     <Compile Include="Memoria\Configuration\Structure\CheatsSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\AnalogControlSection.cs" />
+    <Compile Include="Memoria\Configuration\Structure\AudioSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\ExportSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\FontSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\GraphicsSection.cs" />
@@ -279,6 +284,9 @@
     <Compile Include="Memoria\Configuration\Structure\HacksSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\SystemSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\TetraMasterSection.cs" />
+    <Compile Include="Memoria\Data\Battle\AccessoryItem.cs" />
+    <Compile Include="Memoria\Data\Battle\BattleAbilityHelper.cs" />
+    <Compile Include="Memoria\Data\Charactes\EquipmentSetId.cs" />
     <Compile Include="Memoria\Field\TileMap.cs" />
     <Compile Include="Memoria\Field\TileCoordinates.cs" />
     <Compile Include="Memoria\Test\Commands\CommandMessageType.cs" />

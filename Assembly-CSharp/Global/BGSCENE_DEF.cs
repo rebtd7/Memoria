@@ -315,12 +315,12 @@ public class BGSCENE_DEF
         {
             this.ExtractHeaderData(binaryReader);
             this.ExtractOverlayData(binaryReader);
-            Int32 atlasWidth = info.atlasWidth;
+            Int32 atlasWidth = (Int32) this.ATLAS_W;
             Int32 startOvrIdx = info.startOvrIdx;
             Int32 endOvrIdx = info.endOvrIdx;
             Int32 spriteStartIndex = info.GetSpriteStartIndex(localizeSymbol);
             Int32 num = atlasWidth / (TileSize + 4);
-            Int32 num2 = spriteStartIndex;
+            Int32 spriteIndex = spriteStartIndex;
             for (Int32 i = startOvrIdx; i <= endOvrIdx; i++)
             {
                 BGOVERLAY_DEF overlayInfo = this.overlayList[i];
@@ -338,11 +338,11 @@ public class BGSCENE_DEF
                     spriteInfo2.ReadData_BGSPRITELOC_DEF(binaryReader);
                     if (this.useUpscaleFM)
                     {
-                        spriteInfo2.atlasX = (UInt16)(2 + num2 % num * (TileSize + 4));
-                        spriteInfo2.atlasY = (UInt16)(2 + num2 / num * (TileSize + 4));
+                        spriteInfo2.atlasX = (UInt16)(2 + spriteIndex % num * (TileSize + 4));
+                        spriteInfo2.atlasY = (UInt16)(2 + spriteIndex / num * (TileSize + 4));
                         spriteInfo2.w = (ushort)TileSize;
                         spriteInfo2.h = (ushort)TileSize;
-                        num2++;
+                        spriteIndex++;
                     }
                 }
             }
@@ -423,18 +423,21 @@ public class BGSCENE_DEF
     private void loadLocalizationInfo(String newName, String path)
     {
         /*String symbol = Localization.GetSymbol();
-        if (symbol != "US")
+        if (symbol == "US")
+            return;
+        
+        FieldMapLocalizeAreaTitleInfo info = FieldMapInfo.localizeAreaTitle.GetInfo(newName);
+        if (info == null)
+            return;
+        
+        if (symbol != "UK" || info.hasUK)
         {
-            FieldMapLocalizeAreaTitleInfo info = FieldMapInfo.localizeAreaTitle.GetInfo(newName);
-            if (info != null)
-            {
-                if (symbol != "UK" || info.hasUK)
-                {
-                    BGSCENE_DEF bGSCENE_DEF = new BGSCENE_DEF(this.useUpscaleFM);
-                    bGSCENE_DEF._LoadDummyEBG(this, path, newName, info, symbol);
-                }
-            }
-        }*/
+            BGSCENE_DEF bGSCENE_DEF = new BGSCENE_DEF(this.useUpscaleFM);
+            bGSCENE_DEF.atlas = this.atlas;
+            bGSCENE_DEF.ATLAS_W = this.ATLAS_W;
+            bGSCENE_DEF.ATLAS_H = this.ATLAS_H;
+            bGSCENE_DEF._LoadDummyEBG(this, path, newName, info, symbol);
+        }
     }
 
     public void LoadEBG(FieldMap fieldMap, String path, String newName)
@@ -471,7 +474,7 @@ public class BGSCENE_DEF
             2252
         };
         this.combineMeshes = list.Contains(FF9StateSystem.Common.FF9.fldMapNo);
-        if (this.combineMeshes && !Configuration.Import.Enabled && !Configuration.Import.Field)
+        if (this.combineMeshes && !Configuration.Import.Field)
         {
             this.loadLocalizationInfo(newName, path);
             this.CreateSceneCombined(fieldMap, this.useUpscaleFM);

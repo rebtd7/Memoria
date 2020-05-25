@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using FF9;
 using Memoria;
@@ -25,6 +24,7 @@ public enum FieldMapFlags : uint
     Generic127 = Unknown128 - 1,
     Unknown128 = 128,
 }
+
 
 public class FieldMap : HonoBehavior
 {
@@ -485,28 +485,7 @@ public class FieldMap : HonoBehavior
 
     public static Boolean IsNarrowMap()
     {
-        switch (FF9StateSystem.Common.FF9.fldMapNo)
-        {
-            case 0052: // Prima Vista - Meeting Room
-            case 0455: // Mountain - Base
-            case 1507: // Conde Petie - Pathway
-            case 1605: // Madain Sari - Eidolon Wall
-            case 1606: // Madain Sari - Chamber
-            case 1607: // Madain Sari - Kitchen
-            case 1823: // Alexandira Castle - Hallway
-            case 2000: // Hilda Garde 2 - Deck
-            case 2007: // Alexandira Castle - Altar
-            case 2204: // Desert Palace - Odessey
-            case 2208: // Desert Palace - Hallway
-            case 2261: // Oeilvert - Bridge
-            case 2363: // Gulug - Path
-            case 2510: // Iifa Tree - Silver Dragon
-            //case 3009: // Ending - TH
-            //case 3010: // Ending - TH
-            //case 3011: // Ending - TH
-                return true;
-        }
-        return false;
+        return NarrowMapList.IsCurrentMapNarrow();
     }
 
     public void LoadFieldMap(String name)

@@ -229,7 +229,7 @@ namespace Memoria.Launcher
 
         public Boolean CheckUpdates
         {
-            get { return _checkUpdates; }
+            get => _checkUpdates;
             set
             {
                 if (_checkUpdates != value)
@@ -239,6 +239,8 @@ namespace Memoria.Launcher
                 }
             }
         }
+
+        public Boolean AutoRunGame { get; private set; }
 
         #endregion
 
@@ -356,6 +358,11 @@ namespace Memoria.Launcher
                     value = "false";
                 if (!Boolean.TryParse(value, out _checkUpdates))
                     _checkUpdates = false;
+                
+                value = iniFile.ReadValue("Memoria", nameof(AutoRunGame));
+                if (String.IsNullOrEmpty(value))
+                    value = "false";
+                AutoRunGame = Boolean.TryParse(value, out var autoRunGame) && autoRunGame;
 
                 value = iniFile.ReadValue("Memoria", nameof(MoguriFolder));
                 if (!String.IsNullOrEmpty(value))

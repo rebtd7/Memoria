@@ -1,19 +1,26 @@
-# Memoria + Moguri HD 
+# Memoria
 Final Fantasy IX Engine
 
-Installation :
+# Updates
+1. Update the game to the **latest** version.
+2. Update Memoria to the **latest** version.
+3. **Delete** "Memoria.ini" from the game directory (otherwise you will not see new settings).
+4. Patch again
 
-# Copy File:
-1. OPTIONAL  - Backup your Final Fantasy IX steam installation folder
-2. Copy the "StreamingAssets" folder inside your Final Fantasy IX steam installation folder. It should override existing files.
+
+# Build
+1. Use Visual Studio 2019 or JetBrains Rider.
+2. Copy "*.dll" from "\FINAL FANTASY IX\x64\FF9_Data\Managed" to the "\References" folder in the solution directory.
+3. Resture NuGet packages manualy or enable automaticaly package downloads.
+
 
 # Patch:
-1. Launch Memoria.Patcher.exe - will patch game files using current directory or path from the windows registry
+1. Memoria.Patcher.exe - will patch game files using current directory or path from the windows registry
 2. Memoria.Patcher.exe gameDirectory - will patch game files using a provided path
 
 
 # First run:
-1. Run the game.
+1. Run game.
 2. If there is no error you will see "Memoria.ini" file in the game directory.
 3. If something went wrong you will see error in the "Memoria.log"
 4. If you not see "Memoria.log" try to run game with administrator rights
@@ -24,19 +31,20 @@ Installation :
 
 
 # Features:
-1. Custom Size PSX Style Battle HUD/UI Value(Modify value in Memoria.ini)
-2. Widescreen support (just select any 16:9 resolution)
-3. Disable/Enable cheats
-4. Fast battles (Change FPS, a Swirl duration, skip waiting or turn-based)
-5. Save/Load anywhere (Alt+F5, Alt+F9) 
-6. Edit game data (look at the "StreamingAssets\Data" folder)
-7. Change ability mechanics (look at the "StreamingAssets\Scripts" folder)
-8. All of the characters available (Alt+F2 to show a party window) [be careful](https://github.com/Albeoris/Memoria/issues/3)!
-9. Easy rope jumping, frog catching, hippaul racing
-10. Auto discard cards
-11. Change the game font
+1. Widescreen support (just select any 16:9 resolution)
+2. Disable/Enable cheats
+3. Fast battles (Change FPS, a Swirl duration, skip waiting or turn-based)
+4. Save/Load anywhere (Alt+F5, Alt+F9) 
+5. Edit game data (look at the "StreamingAssets\Data" folder)
+6. Change ability mechanics (look at the "StreamingAssets\Scripts" folder)
+7. All of the characters available (Alt+F2 to show a party window) [be careful](https://github.com/Albeoris/Memoria/issues/3)!
+8. Easy rope jumping, frog catching, hippaul racing
+9. Auto discard cards
+10. Change the game font
+11. [Change audio volume](https://github.com/Albeoris/Memoria/issues/36) (Ctrl+Alt+Shift+M to show configuration menu)
 12. Export/import text resources
 13. Export/import audio resources (Ctrl+Alt+Shift+S to debug)
+14. [Bypass the Launcher](https://github.com/Albeoris/Memoria/issues/70) 
 
 
 # Configuration:

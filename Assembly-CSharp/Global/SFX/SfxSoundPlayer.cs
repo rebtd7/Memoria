@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Memoria;
+using Memoria.Prime;
 using UnityEngine;
 
 public class SfxSoundPlayer : SoundPlayer
 {
-	public void EnableSoundEffect()
+	public void SetVolume(Int32 volume)
 	{
-		this.playerVolume = 1f;
-		this.UpdatePlayingSoundVolume();
-	}
-
-	public void DisableSoundEffect()
-	{
-		this.playerVolume = 0f;
+		this.playerVolume = volume / 100f;
 		this.UpdatePlayingSoundVolume();
 	}
 
@@ -62,7 +58,12 @@ public class SfxSoundPlayer : SoundPlayer
 	{
 		this.CurrentSpecialEffectID = specialEffectID;
 		this.UnloadAllSoundData(this.soundDatabase);
-		List<String> list = SoundMetaData.SfxSoundIndex[specialEffectID];
+		if (!SoundMetaData.SfxSoundIndex.TryGetValue(specialEffectID, out var list))
+		{
+			Log.Error($"[SoundData] Sound not found: {specialEffectID}");
+			return;
+		}
+
 		for (Int32 i = 0; i < list.Count; i++)
 		{
 			Int32 soundIndex = this.GetSoundIndex(specialEffectID, i, this.GetResidentSoundCount());

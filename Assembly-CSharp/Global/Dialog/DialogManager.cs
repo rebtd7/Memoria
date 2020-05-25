@@ -4,6 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Sources.Scripts.UI.Common;
 using UnityEngine;
+using Assets.Scripts.Common;
+using Memoria;
+using Memoria.Assets;
+using Memoria.Scenes;
+using Memoria.Scripts;
 using Object = System.Object;
 
 public class DialogManager : Singleton<DialogManager>
