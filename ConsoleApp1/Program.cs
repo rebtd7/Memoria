@@ -14,13 +14,8 @@ namespace ConsoleApplication2
         static void Main(string[] args)
         {
 
-            byte[] left = File.ReadAllBytes("d:\\FFIX_HD_MOD\\FONT_RESOURCES\\resources.ORIG");
-            byte[] right = File.ReadAllBytes("d:\\FFIX_HD_MOD\\FONT_RESOURCES\\resources.GARNET_GFX");
-
-
-            
-
-
+            /*byte[] left = File.ReadAllBytes("d:\\FFIX_HD_MOD\\FONT_RESOURCES\\resources.ORIG");
+            byte[] right = File.ReadAllBytes("d:\\FFIX_HD_MOD\\FONT_RESOURCES\\resources.GARNET2_GFX");
 
             byte[] outF = Fossil.Delta.Create(left, right);
 
@@ -43,37 +38,69 @@ namespace ConsoleApplication2
             Console.WriteLine(length);
             Console.WriteLine(destinationSize);
 
-            //byte[] outF = Fossil.Delta.Apply(right, patch);
-            //File.WriteAllBytes("d:\\workspace\\Memoria\\Output\\resources.assets", outF);
+
+            */
+
+            byte[] left2 = File.ReadAllBytes("d:\\FFIX_HD_MOD\\SharedAsset2\\sharedassets2.orig");
+            byte[] right2 = File.ReadAllBytes("d:\\FFIX_HD_MOD\\SharedAsset2\\sharedassets2.assets");
+
+            byte[] outF2 = Fossil.Delta.Create(left2, right2);
+
+            File.WriteAllBytes("d:\\workspace\\Memoria\\Output\\sharedassets2_patch.diff", outF2);
+            byte[] patch2 = File.ReadAllBytes("d:\\workspace\\Memoria\\Output\\sharedassets2_patch.diff");
+            var destinationSize2 = Fossil.Delta.OutputSize(patch2);
+
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead("d:\\FFIX_HD_MOD\\SharedAsset2\\sharedassets2.bak"))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    var hash_str = BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                    Console.WriteLine(hash_str);
+                }
+
+            }
+
+            long length2 = new System.IO.FileInfo("d:\\FFIX_HD_MOD\\SharedAsset2\\sharedassets2.orig").Length;
+            Console.WriteLine(length2);
+            Console.WriteLine(destinationSize2);
+
+
 
 
 
             /*
-              try
-              {
-                  if (args.Length == 0)
-                  {
-                      Console.WriteLine("ConsoleApplication2.exe <filePath>");
-                      return;
-                  }
+            byte[] outF = Fossil.Delta.Apply(right, patch);
+            File.WriteAllBytes("d:\\workspace\\Memoria\\Output\\resources.assets", outF);
+            */
 
-                  String inputPath = args[0];
-                  String outputPath = args[0] + ".encrypted";
-                  Byte[] data = File.ReadAllBytes(inputPath);
-                  data = Encryption(data);
-                  File.WriteAllBytes(outputPath, data);
-                  Console.WriteLine("Done");
-              }
-              catch (Exception ex)
-              {
-                  Console.WriteLine(ex);
-              }
-              finally
-              {
-                  Console.WriteLine("Press enter to exit...");
-                  Console.ReadLine();
-              }
-              */
+
+
+            /*try
+            {
+                if (args.Length == 0)
+                {
+                    Console.WriteLine("ConsoleApplication2.exe <filePath>");
+                    return;
+                }
+
+                String inputPath = args[0];
+                String outputPath = args[0] + ".encrypted";
+                Byte[] data = File.ReadAllBytes(inputPath);
+                data = Encryption(data);
+                File.WriteAllBytes(outputPath, data);
+                Console.WriteLine("Done");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            finally
+            {
+                Console.WriteLine("Press enter to exit...");
+                Console.ReadLine();
+            }*/
+
         }
 
 
