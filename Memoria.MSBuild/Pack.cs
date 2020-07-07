@@ -55,12 +55,13 @@ namespace Memoria.MSBuild
                     compressedDataPosition = executableFile.Position;
 
                     Dictionary<String, UInt16> pathMap = new Dictionary<String, UInt16>(capacity: 400);
-                    PackFolder("StreamingAssets", "StreamingAssets", compressStream, bw, pathMap, ref uncompressedDataSize);
+                    //PackFolder("StreamingAssets", "StreamingAssets", compressStream, bw, pathMap, ref uncompressedDataSize);
                     PackFolder("Debugger", "Debugger", compressStream, bw, pathMap, ref uncompressedDataSize);
                     PackDLLs("", "{PLATFORM}\\FF9_Data\\Managed", compressStream, bw, pathMap, ref uncompressedDataSize);
+                    PackOptionalFile("resources_patch.diff", "{PLATFORM}\\FF9_Data\\resources_patch.diff", compressStream, bw, pathMap, ref uncompressedDataSize);
                     PackOptionalFile("Launcher\\Memoria.Launcher.exe", "FF9_Launcher.exe", compressStream, bw, pathMap, ref uncompressedDataSize);
                     PackOptionalFile("Launcher\\Memoria.Launcher.exe.config", "FF9_Launcher.exe.config", compressStream, bw, pathMap, ref uncompressedDataSize);
-                    PackOptionalFile("Launcher\\Memoria.ini", "Memoria.ini", compressStream, bw, pathMap, ref uncompressedDataSize);
+                    //PackOptionalFile("Launcher\\Memoria.ini", "Memoria.ini", compressStream, bw, pathMap, ref uncompressedDataSize);
 
 
                     bw.Flush();
@@ -68,7 +69,7 @@ namespace Memoria.MSBuild
                     Double compressionRation = (Double)compressedDataSize / uncompressedDataSize;
                     sw.Stop();
 
-                    _log.LogMessage(MessageImportance.High, "{0}Packed [{1}]:{0}Uncompressed size: {2}{0}Compressed size: {3}{0}Compression ration: {4}{0}Time: {5}{0}", Environment.NewLine, TargetName, uncompressedDataSize, compressedDataSize, compressionRation, sw.Elapsed);
+                    _log.LogMessage(MessageImportance.High, "{0}Packed File [{1}]:{0}Uncompressed size: {2}{0}Compressed size: {3}{0}Compression ration: {4}{0}Time: {5}{0}", Environment.NewLine, TargetName, uncompressedDataSize, compressedDataSize, compressionRation, sw.Elapsed);
                 }
 
                 using (BinaryWriter bw = new BinaryWriter(executableFile))

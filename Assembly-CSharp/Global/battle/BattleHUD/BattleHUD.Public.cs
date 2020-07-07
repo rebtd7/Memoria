@@ -1,4 +1,4 @@
-﻿using Assets.Sources.Scripts.UI.Common;
+using Assets.Sources.Scripts.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using FF9;
 using Memoria;
@@ -6,8 +6,9 @@ using Memoria.Data;
 using Memoria.Database;
 using Memoria.Prime;
 using Memoria.Scenes;
-using Memoria.Test;
 using UnityEngine;
+using System.IO;
+using System.Text.RegularExpressions;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable NotAccessedField.Global
@@ -33,7 +34,22 @@ public partial class BattleHUD : UIScene
     public GameObject StatusContainer;
     public GameObject TransitionGameObject;
     public GameObject ScreenFadeGameObject;
-    
+    public UIRoot uiRoot;
+    public UIRect uiRect;
+    public Vector4 attVec;
+    public Vector4 sk1Vec;
+    public Vector4 sk2Vec;
+    public Vector4 itmVec;
+    public GameObject _abilityPanel;
+    public GameObject _itemPanel;
+    public Vector3 abilityPos;
+    public Vector3 itemPos;
+    public float left;
+    public float right;
+    public float top;
+    public float bottom;
+    public int panelFix;
+
     private void Update()
     {
         if (PersistenSingleton<UIManager>.Instance.QuitScene.isShowQuitUI || PersistenSingleton<UIManager>.Instance.State != UIManager.UIState.BattleHUD)
@@ -81,6 +97,63 @@ public partial class BattleHUD : UIScene
         //}
     }
     
+
+    public void SetCommandPSX()
+    {
+        if ((this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Left)) || UIManager.Input.GetKey(Control.Right))
+        {
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Left))
+            {
+                this._commandPanel.Defend.Button.gameObject.SetActive(true);
+            }
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Right))
+            {
+                this._commandPanel.Change.Button.gameObject.SetActive(true);
+            }
+            this._commandPanel.Attack.Button.gameObject.SetActive(false);
+            this._commandPanel.Defend.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
+            this._commandPanel.Change.Button.GetComponent<UIWidget>().SetRect(this.attVec.x, this.attVec.y, this.attVec.z, this.attVec.w);
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Left))
+            {
+                ButtonGroupState.ActiveButton = this._commandPanel.GetCommandButton(BattleHUD.CommandMenu.Defend);
+            }
+            if (this._commandPanel.Widget.isVisible && UIManager.Input.GetKey(Control.Right))
+            {
+                ButtonGroupState.ActiveButton = this._commandPanel.GetCommandButton(BattleHUD.CommandMenu.Change);
+            }
+            ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
+            return;
+        }
+        this._commandPanel.Attack.Button.gameObject.SetActive(true);
+        ButtonGroupState.SetPointerOffsetToGroup(new Vector2(10f, 0f), "Battle.Command");
+        this._commandPanel.Change.Button.GetComponent<UIButton>().gameObject.SetActive(false);
+        this._commandPanel.Defend.Button.GetComponent<UIButton>().gameObject.SetActive(false);
+    }
+
+    public void Start()
+    {
+        this.panelFix = 0;
+        this.left = UIManager.ScreenResUIScreenCoOrdinate.x;
+        this.right = UIManager.ScreenResUIScreenCoOrdinate.z;
+        this.bottom = UIManager.ScreenResUIScreenCoOrdinate.y;
+        this.top = UIManager.ScreenResUIScreenCoOrdinate.w;
+    }
+
+    public void CommandPanelFix()
+    {
+        if (this.panelFix == 0)
+        {
+            this._commandPanel.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Attack.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Skill1.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Skill2.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Item.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Defend.Widget.ResetAndUpdateAnchors();
+            this._commandPanel.Change.Widget.ResetAndUpdateAnchors();
+            this.panelFix = 1;
+        }
+    }
+
     private void Awake()
     {
         FadingComponent = ScreenFadeGameObject.GetExactComponent<HonoFading>();

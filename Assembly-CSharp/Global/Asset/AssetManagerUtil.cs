@@ -1,5 +1,8 @@
-﻿using System;
+using System;
+using Memoria;
+using Memoria.Prime;
 using UnityEngine;
+
 using Object = System.Object;
 
 public static class AssetManagerUtil
@@ -7,18 +10,33 @@ public static class AssetManagerUtil
 	public static String GetStreamingAssetsPath()
 	{
 		if (Application.platform == RuntimePlatform.WindowsPlayer)
-		{
-			return "StreamingAssets";
-		}
-		return Application.streamingAssetsPath;
+
+	public static string GetPersistentDataPath()
+        {
+            string path = GetPath();
+            Log.Message("[assetInterceptor] loading from directory [{0}]", path);
+            if (path == null || (System.IO.Directory.Exists(path)) == false)
+            {
+                Log.Warning("[assetInterceptor] [{0}] not found, loading from default directory", path);
+                path = "./StreamingAssets";
+            }
+            return path;
+        }
+        return Application.streamingAssetsPath;
 	}
+
+    private static string GetPath()
+    {
+        return Configuration.System.Path;
+    }
 
 	public static String GetResourcesAssetsPath(Boolean shortVersion)
 	{
 		return shortVersion ? "FF9_Data" : "x64/FF9_Data";
 	}
 
-	public static string GetPersistentDataPath()
+
+    public static string GetPersistentDataPath()
     {
         if (FF9StateSystem.PCEStorePlatform)
         {

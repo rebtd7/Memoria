@@ -13,15 +13,17 @@ namespace Memoria
             public readonly IniValue<Int32> TileSize;
             public readonly IniValue<Int32> SkipIntros;
             public readonly IniValue<Int32> GarnetHair;
+            public readonly IniValue<Boolean> UseGarnetFont;
 
             public GraphicsSection() : base(nameof(GraphicsSection), false)
             {
                 BattleFPS = BindInt32(nameof(BattleFPS), 15);
                 BattleSwirlFrames = BindInt32(nameof(BattleSwirlFrames), 115);
                 WidescreenSupport = BindBoolean(nameof(WidescreenSupport), true);
-                TileSize = BindInt32(nameof(TileSize), 32);
+                TileSize = BindInt32(nameof(TileSize), 64);
                 SkipIntros = BindInt32(nameof(SkipIntros), 0);
                 GarnetHair = BindInt32(nameof(GarnetHair), 0);
+                UseGarnetFont = BindBoolean(nameof(UseGarnetFont), true);
             }
         }
     }

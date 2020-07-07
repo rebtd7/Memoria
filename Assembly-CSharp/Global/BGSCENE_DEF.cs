@@ -39,7 +39,7 @@ using System.Linq;
 
 public class BGSCENE_DEF
 {
-    private static readonly Int32 TileSize = Configuration.Graphics.TileSize;
+    private static readonly Int32 TileSize = 64;
 
 
     public UInt16 sceneLength;
@@ -427,11 +427,11 @@ public class BGSCENE_DEF
         String symbol = Localization.GetSymbol();
         if (symbol == "US")
             return;
-        
+
         FieldMapLocalizeAreaTitleInfo info = FieldMapInfo.localizeAreaTitle.GetInfo(newName);
         if (info == null)
             return;
-        
+
         if (symbol != "UK" || info.hasUK)
         {
             BGSCENE_DEF bGSCENE_DEF = new BGSCENE_DEF(this.useUpscaleFM);

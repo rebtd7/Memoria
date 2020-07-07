@@ -19,7 +19,6 @@ namespace Memoria.Launcher
         {
             InitializeComponent();
             TryLoadImage();
-            TryShowDonation();
 
             PlayButton.GameSettings = GameSettings;
             Loaded += OnLoaded;
@@ -29,6 +28,10 @@ namespace Memoria.Launcher
         {
             if (GameSettings.AutoRunGame)
                 PlayButton.Click();
+                Window root = this.GetRootElement() as Window;
+                if (root != null)
+                    await UiLauncherPlayButton.CheckUpdates(root, evt, PlayButton.GameSettings);
+            }
         }
 
         private void TryLoadImage()
@@ -46,23 +49,6 @@ namespace Memoria.Launcher
             }
             catch
             {
-            }
-        }
-
-        private void TryShowDonation()
-        {
-            try
-            {
-                String showDonationControl = ConfigurationManager.AppSettings[nameof(showDonationControl)];
-                if (showDonationControl == "true")
-                {
-                    Donation.Visibility = Visibility.Visible;
-                    Links.Visibility = Visibility.Visible;
-                }
-            }
-            catch
-            {
-
             }
         }
 

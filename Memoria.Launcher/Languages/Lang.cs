@@ -21,6 +21,7 @@ namespace Memoria.Launcher
                 XmlElement def = XmlHelper.LoadEmbadedDocument(assembly, $"Languages.en.xml");
                 XmlElement cur = null;
 
+                return new Lang(def, def);
                 String[] fileNames = {CultureInfo.CurrentCulture.Name, CultureInfo.CurrentCulture.TwoLetterISOLanguageName};
                 foreach (String name in fileNames)
                 {
