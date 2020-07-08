@@ -133,6 +133,7 @@ public class btl_init
 			num2 = (UInt16)(num2 + 1);
 		}
 		AA_DATA[] array2 = atk;
+		FF9StateSystem.Battle.FF9Battle.enemy_attack = new AA_DATA[header.AtkCount];
 		AA_DATA[] enemy_attack = FF9StateSystem.Battle.FF9Battle.enemy_attack;
 		for (num3 = 0; num3 < (Int16)header.AtkCount; num3 = (Int16)(num3 + 1))
 		{
@@ -158,7 +159,7 @@ public class btl_init
 		pBtl.stat.permanent = pParm.Status[1];
 		pBtl.stat.cur = pParm.Status[2];
 		pBtl.cur.hp = pParm.MaxHP;
-		pBtl.cur.mp = (Int16)pParm.MaxMP;
+		pBtl.cur.mp = pParm.MaxMP;
 		pBtl.defence.PhisicalDefence = pParm.P_DP;
 		pBtl.defence.PhisicalEvade = pParm.P_AV;
 		pBtl.defence.MagicalDefence = pParm.M_DP;
@@ -174,13 +175,17 @@ public class btl_init
 		pBtl.mesh_current = pParm.Mesh[0];
 		pBtl.mesh_banish = pParm.Mesh[1];
 		pBtl.tar_bone = pParm.Bone[3];
+		// New field "out_of_reach"
+		pBtl.out_of_reach = pParm.OutOfReach < 0 ? FF9StateSystem.Battle.FF9Battle.btl_scene.Info.NoNeighboring != 0 : pParm.OutOfReach != 0;
 		ENEMY enemy = FF9StateSystem.Battle.FF9Battle.enemy[pBtl.bi.slot_no];
 		for (Int32 i = 0; i < pParm.StealItems.Length; i++)
 		{
 			enemy.steal_item[i] = pParm.StealItems[i];
 		}
+		enemy.steal_unsuccessful_counter = 0; // New field used for counting unsuccessful steals and force a successful steal when it becomes high enough
 		enemy.info.die_atk = (Byte)(((pParm.Flags & 1) == 0) ? 0 : 1);
 		enemy.info.die_dmg = (Byte)(((pParm.Flags & 2) == 0) ? 0 : 1);
+		enemy.info.flags = pParm.Flags;
 		btl_util.SetShadow(pBtl, pParm.ShadowX, pParm.ShadowZ);
 		pBtl.shadow_bone[0] = pParm.ShadowBone;
 		pBtl.shadow_bone[1] = pParm.ShadowBone2;
@@ -219,7 +224,9 @@ public class btl_init
 			pBtl.original_pos[2] = num;
 			pBtl.base_pos[2] = num;
 			pBtl.pos[index3] = num;
-			pBtl.rot = (pBtl.evt.rotBattle = Quaternion.Euler(new Vector3(0f, pPut.Rot + array2[pScene.Info.StartType] & 4095, 180f)));
+			pBtl.evt.rotBattle = Quaternion.Euler(new Vector3(0f, (Single)(pPut.Rot & 4095), 180f));
+			pBtl.rot = Quaternion.Euler(new Vector3(0f, (Single)(pPut.Rot + array2[(int)pScene.Info.StartType] & 4095), 180f));
+//			pBtl.rot = (pBtl.evt.rotBattle = Quaternion.Euler(new Vector3(0f, pPut.Rot + array2[pScene.Info.StartType] & 4095, 180f)));
 		}
 		else
 		{
@@ -242,7 +249,7 @@ public class btl_init
 		pType.level = pParm.Level;
 		pType.blue_magic_no = pParm.Blue;
 		pType.max.hp = pParm.MaxHP;
-		pType.max.mp = (Int16)pParm.MaxMP;
+		pType.max.mp = pParm.MaxMP;
 		pType.bonus.gil = pParm.WinGil;
 		pType.bonus.exp = pParm.WinExp;
 		pType.bonus.card = pParm.Card;
@@ -387,7 +394,9 @@ public class btl_init
 			next.evt.posBattle[2] = num7;
 			next.base_pos[2] = num7;
 			btl_DATA3.pos[index3] = num7;
-			next.rot = (next.evt.rotBattle = Quaternion.Euler(new Vector3(0f, num6, 180f)));
+			next.evt.rotBattle = Quaternion.Euler(new Vector3(0f, 180f, 180f));
+			next.rot = Quaternion.Euler(new Vector3(0f, (float)num6, 180f));
+//			next.rot = (next.evt.rotBattle = Quaternion.Euler(new Vector3(0f, num6, 180f)));
 			next.gameObject.transform.localPosition = next.pos;
 			next.gameObject.transform.localRotation = next.rot;
 			Int16 serial_no = FF9StateSystem.Common.FF9.player[next.bi.slot_no].info.serial_no;
@@ -464,6 +473,13 @@ public class btl_init
 		btl.defence.MagicalEvade = p.defence.MagicalEvade;
 		btl_eqp.InitEquipPrivilegeAttrib(p, btl);
 		btl_util.GeoSetColor2Source(btl.weapon_geo, 0, 0, 0);
+		btl_abil.CheckStatusAbility(new BattleUnit(btl));
+		BattleStatus permanent_stat = btl.stat.permanent;
+		BattleStatus current_stat = btl.stat.cur;
+		btl.stat.permanent = 0;
+		btl.stat.cur = 0;
+		btl_stat.MakeStatusesPermanent(btl, permanent_stat);
+		btl_stat.AlterStatuses(btl, current_stat);
 		if (btl.cur.hp * 6 < btl.max.hp)
 		{
 			btl.stat.cur |= BattleStatus.LowHP;
@@ -474,7 +490,6 @@ public class btl_init
 		{
 			btl_stat.AlterStatus(btl, BattleStatus.Petrify);
 		}
-		btl_abil.CheckStatusAbility(new BattleUnit(btl));
 		btl.base_pos = btl.evt.posBattle;
 		Int16 geoID = btl.dms_geo_id;
 		btl.height = 0;
@@ -527,6 +542,12 @@ public class btl_init
 				btl_DATA.currentAnimationName = btl_DATA.mot[btl_DATA.bi.def_idle];
 				btl_DATA.evt.animFrame = (Byte)(Comn.random8() % GeoAnim.geoAnimGetNumFrames(btl_DATA));
 			}
+			BattleStatus permanent_stat = btl_DATA.stat.permanent;
+			BattleStatus current_stat = btl_DATA.stat.cur;
+			btl_DATA.stat.permanent = 0;
+			btl_DATA.stat.cur = 0;
+			btl_stat.MakeStatusesPermanent(btl_DATA, permanent_stat);
+			btl_stat.AlterStatuses(btl_DATA, current_stat);
 		}
 	}
 
@@ -576,6 +597,14 @@ public class btl_init
 		GeoTexAnim.geoTexAnimPlay(btl.texanimptr, 2);
 		btl_util.GeoSetColor2Source(btl.gameObject, 0, 0, 0);
 		btl.mesh_current = 0;
+		// Out of reach: enemies inside battles flagged with "NoNeighboring" are all set to out of reach but they can also be placed individually using SV_FunctionEnemy[110] in battle scripts or setting the "OutOfReach" flag in the battle's ".memnfo" file
+		// False by default for player character, initialized in "btl_init.SetMonsterData" for enemies
+		btl.out_of_reach = false;
+		for (int i = 0; i < btl.stat_modifier.Length; i++)
+			btl.stat_modifier[i] = false;
+		btl.summon_count = 0;
+		btl.critical_rate_deal_bonus = 0;
+		btl.critical_rate_receive_bonus = 0;
 	}
 
     public static void SetBattleModel(BTL_DATA btl)
@@ -619,41 +648,49 @@ public class btl_init
 
 	public const Byte BTL_WAIT_PLAYER_APPEAR_DONE = 64;
 
-	public static String[] model_id = new String[]
+	public static String[] model_id = new String[] // Follow the list of "BattlePlayerCharacter.PlayerSerialNumber"
 	{
-		"GEO_MAIN_B0_000",
-		"GEO_MAIN_B0_001",
-		"GEO_MAIN_B0_006",
-		"GEO_MAIN_B0_002",
-		"GEO_MAIN_B0_003",
-		"GEO_MAIN_B0_004",
-		"GEO_MAIN_B0_005",
-		"GEO_MAIN_B0_018",
-		"GEO_MAIN_B0_007",
-		"GEO_MAIN_B0_008",
-		"GEO_MAIN_B0_009",
-		"GEO_MAIN_B0_010",
-		"GEO_MAIN_B0_011",
-		"GEO_MAIN_B0_012",
-		"GEO_MAIN_B0_013",
-		"GEO_MAIN_B0_014",
-		"GEO_MAIN_B0_015",
-		"GEO_MAIN_B0_016",
-		"GEO_MAIN_B0_017",
-		"GEO_MAIN_B0_022",
-		"GEO_MAIN_B0_023",
-		"GEO_MAIN_B0_028",
-		"GEO_MAIN_B0_024",
-		"GEO_MAIN_B0_025",
-		"GEO_MAIN_B0_026",
-		"GEO_MAIN_B0_027",
-		"GEO_MAIN_B0_029",
-		"GEO_MAIN_B0_029",
-		"GEO_MAIN_B0_030",
-		"GEO_MAIN_B0_031",
-		"GEO_MAIN_B0_032",
-		"GEO_MAIN_B0_033",
-		"GEO_MAIN_B0_034"
+		// Normal models:
+		"GEO_MAIN_B0_000", // ZIDANE_DAGGER
+		"GEO_MAIN_B0_001", // ZIDANE_SWORD,
+		"GEO_MAIN_B0_006", // VIVI,
+		"GEO_MAIN_B0_002", // GARNET_LH_ROD,
+		"GEO_MAIN_B0_003", // GARNET_LH_KNIFE,
+		"GEO_MAIN_B0_004", // GARNET_SH_ROD,
+		"GEO_MAIN_B0_005", // GARNET_SH_KNIFE,
+		"GEO_MAIN_B0_018", // STEINER_OUTDOOR,
+		"GEO_MAIN_B0_007", // STEINER_INDOOR,
+		"GEO_MAIN_B0_008", // KUINA,
+		"GEO_MAIN_B0_009", // EIKO_FLUTE,
+		"GEO_MAIN_B0_010", // EIKO_KNIFE,
+		"GEO_MAIN_B0_011", // FREIJA,
+		"GEO_MAIN_B0_012", // SALAMANDER,
+		"GEO_MAIN_B0_013", // CINNA,
+		"GEO_MAIN_B0_014", // MARCUS,
+		"GEO_MAIN_B0_015", // BLANK,
+		"GEO_MAIN_B0_016", // BLANK_ARMOR,
+		"GEO_MAIN_B0_017", // BEATRIX,
+		// Trance models:
+		"GEO_MAIN_B0_022", // ZIDANE_DAGGER
+		"GEO_MAIN_B0_023", // ZIDANE_SWORD,
+		"GEO_MAIN_B0_028", // VIVI,
+		"GEO_MAIN_B0_024", // GARNET_LH_ROD,
+		"GEO_MAIN_B0_025", // GARNET_LH_KNIFE,
+		"GEO_MAIN_B0_026", // GARNET_SH_ROD,
+		"GEO_MAIN_B0_027", // GARNET_SH_KNIFE,
+		"GEO_MAIN_B0_029", // STEINER_OUTDOOR,
+		"GEO_MAIN_B0_029", // STEINER_INDOOR,
+		"GEO_MAIN_B0_030", // KUINA,
+		"GEO_MAIN_B0_031", // EIKO_FLUTE,
+		"GEO_MAIN_B0_032", // EIKO_KNIFE,
+		"GEO_MAIN_B0_033", // FREIJA,
+		"GEO_MAIN_B0_034", // SALAMANDER,
+		// Trance models of temporary characters: use the same as normal models
+		"GEO_MAIN_B0_013", // CINNA,
+		"GEO_MAIN_B0_014", // MARCUS,
+		"GEO_MAIN_B0_015", // BLANK,
+		"GEO_MAIN_B0_016", // BLANK_ARMOR,
+		"GEO_MAIN_B0_017"  // BEATRIX,
 	};
 
 	private static readonly UInt32[] enemy_dummy_sa = new UInt32[2];

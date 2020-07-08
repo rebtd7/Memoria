@@ -19,6 +19,7 @@ obj/
 *.sdf
 *.tlog
 *.meta
+*.log
 
 References/*.dll
 !References/Memoria.MSBuild.dll

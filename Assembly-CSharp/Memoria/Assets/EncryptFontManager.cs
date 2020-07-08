@@ -33,8 +33,9 @@ namespace Memoria.Assets
             String path = "EmbeddedAsset/FA/" + AssetManagerUtil.GetPlatformPrefix(Application.platform) + "_fa.mpc";
             if (fontBundle == null)
             {
-                TextAsset textAsset = Resources.Load<TextAsset>(path);
-                Byte[] binary = ByteEncryption.Decryption(textAsset.bytes);
+				String[] fontInfo;
+                Byte[] binAsset = AssetManager.LoadBytes(path, out fontInfo, false);
+                Byte[] binary = ByteEncryption.Decryption(binAsset);
                 fontBundle = AssetBundle.CreateFromMemoryImmediate(binary);
             }
             if (Configuration.Graphics.UseGarnetFont && fontBundle.Contains("Garnet"))
