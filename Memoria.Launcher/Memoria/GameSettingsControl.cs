@@ -40,7 +40,7 @@ namespace Memoria.Launcher
             foreach (UInt16 frequency in EnumerateAudioSettings())
                 _validSamplingFrequency.Add(frequency);
             
-            SetRows(27);
+            SetRows(20);
             SetCols(2);
             
 
@@ -50,48 +50,48 @@ namespace Memoria.Launcher
             Margin = new Thickness(5);
             DataContext = this;
 
-            Thickness rowMargin = new Thickness(0, 8, 0, 3);
-            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.ActiveMonitor), row: 0, col: 0, rowSpan: 3, colSpan:2).Margin = rowMargin;
+            Thickness rowMargin = new Thickness(5, 2, 5, 2);
+
+            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.ActiveMonitor), row: 0, col: 0, rowSpan: 2, colSpan:2).Margin = rowMargin;
+
             UiComboBox monitor = AddUiElement(UiComboBoxFactory.Create(), row: 2, col: 0, rowSpan: 3, colSpan: 2);
             monitor.ItemsSource = GetAvailableMonitors();
             monitor.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(ActiveMonitor)) { Mode = BindingMode.TwoWay });
-            monitor.Margin = rowMargin;
+            monitor.Margin = new Thickness(5, 2, 5, 8);
 
-            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.Resolution), row: 6, col: 0,rowSpan: 3).Margin = rowMargin;
-            UiComboBox resolution = AddUiElement(UiComboBoxFactory.Create(), row: 8, col: 0, rowSpan: 3);
+            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.Resolution), row: 5, col: 0,rowSpan: 2,colSpan: 2).Margin = rowMargin;
+
+            UiComboBox resolution = AddUiElement(UiComboBoxFactory.Create(), row: 7, col: 0, rowSpan: 3, colSpan: 1);
             resolution.ItemsSource = EnumerateDisplaySettings().ToArray();
             resolution.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(ScreenResolution)) { Mode = BindingMode.TwoWay });
-            resolution.Margin = rowMargin;
+            resolution.Margin = new Thickness(5, 2, 5, 8);
 
-            UiCheckBox windowedCheckBox = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.Windowed, null), row: 8, col: 1, rowSpan: 3);
+            UiCheckBox windowedCheckBox = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.Windowed, null), row: 7, col: 1, rowSpan: 2, colSpan: 1);
             windowedCheckBox.Margin = rowMargin;
             windowedCheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(Windowed)) { Mode = BindingMode.TwoWay });
 
-            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.AudioSamplingFrequency), 12, 0, 3, 2).Margin = rowMargin;
-            UiComboBox audio = AddUiElement(UiComboBoxFactory.Create(), 14, 0, 3, 2);
+            AddUiElement(UiTextBlockFactory.Create(Lang.Settings.AudioSamplingFrequency), 10, 0, 2, 2).Margin = rowMargin;
+
+            UiComboBox audio = AddUiElement(UiComboBoxFactory.Create(), 12, 0, 3, 2);
             audio.ItemStringFormat = Lang.Settings.AudioSamplingFrequencyFormat;
             audio.ItemsSource = EnumerateAudioSettings().ToArray();
             audio.SetBinding(Selector.SelectedItemProperty, new Binding(nameof(AudioFrequency)) { Mode = BindingMode.TwoWay });
             audio.SetBinding(Selector.IsEnabledProperty, new Binding(nameof(AudioFrequencyEnabled)) { Mode = BindingMode.TwoWay });
-            audio.Margin = rowMargin;
+            audio.Margin = new Thickness(5, 2, 5, 8);
 
-            UiCheckBox x64 = AddUiElement(UiCheckBoxFactory.Create(" X64", null), 17, 0, 3, 0);
-            x64.Margin = rowMargin;
-            x64.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(IsX64)) {Mode = BindingMode.TwoWay});
-            x64.SetBinding(ToggleButton.IsEnabledProperty, new Binding(nameof(IsX64Enabled)) {Mode = BindingMode.TwoWay});
 
-            UiCheckBox debuggableCheckBox = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.Debuggable, null), 17, 1, 3, 0);
+            UiCheckBox debuggableCheckBox = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.Debuggable, null), 15, 0, 2, 0);
             debuggableCheckBox.Margin = rowMargin;
             debuggableCheckBox.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(IsDebugMode)) { Mode = BindingMode.TwoWay });
 
-            UiCheckBox checkUpdates = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.CheckUpdates, null), 19, 0, 3, 2);
-            checkUpdates.Margin = new Thickness(0, 8, 0, 8);
+            UiCheckBox checkUpdates = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.CheckUpdates, null), 17, 0, 2, 2);
+            checkUpdates.Margin = rowMargin;
             checkUpdates.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(CheckUpdates)) { Mode = BindingMode.TwoWay });
 
             foreach (FrameworkElement child in Children)
             {
                 //if (!ReferenceEquals(child, backround))
-                child.Margin = new Thickness(child.Margin.Left + 8, child.Margin.Top, child.Margin.Right + 8, child.Margin.Bottom);
+                //child.Margin = new Thickness(child.Margin.Left + 8, child.Margin.Top, child.Margin.Right + 8, child.Margin.Bottom);
 
                 TextBlock textblock = child as TextBlock;
                 if (textblock != null)

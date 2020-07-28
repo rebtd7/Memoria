@@ -126,11 +126,11 @@ namespace Memoria.Launcher
                 await Task.Factory.StartNew(
                     () =>
                     {
-                        ProcessStartInfo gameStartInfo = new ProcessStartInfo(executablePath, arguments) {UseShellExecute = false };
+                        ProcessStartInfo gameStartInfo = new ProcessStartInfo(executablePath, arguments) { UseShellExecute = false };
                         if (GameSettings.IsDebugMode)
                             gameStartInfo.EnvironmentVariables["UNITY_GIVE_CHANCE_TO_ATTACH_DEBUGGER"] = "1";
 
-                        Process gameProcess = new Process {StartInfo = gameStartInfo};
+                        Process gameProcess = new Process { StartInfo = gameStartInfo };
                         gameProcess.Start();
 
                         if (GameSettings.IsDebugMode)
@@ -141,8 +141,8 @@ namespace Memoria.Launcher
                                 String debuggerDirectory = Path.Combine(Path.GetFullPath("Debugger"), "x64");
                                 String debuggerPath = Path.Combine(debuggerDirectory, "Memoria.Debugger.exe");
                                 String debuggerArgs = "10000"; // Timeout: 10 seconds
-                                ProcessStartInfo debuggerStartInfo = new ProcessStartInfo(debuggerPath, debuggerArgs) {WorkingDirectory = debuggerDirectory};
-                                debuggerProcess = new Process {StartInfo = debuggerStartInfo};
+                                ProcessStartInfo debuggerStartInfo = new ProcessStartInfo(debuggerPath, debuggerArgs) { WorkingDirectory = debuggerDirectory };
+                                debuggerProcess = new Process { StartInfo = debuggerStartInfo };
                                 debuggerProcess.Start();
                             }
                         }
@@ -160,15 +160,15 @@ namespace Memoria.Launcher
         {
             String applicationPath = Path.GetFullPath(Uri.UnescapeDataString(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path));
             String installationFolder = gameSettings.MoguriFolder;
-            string fullPath = Path.Combine(installationFolder, "updater.exe") ;
+            string fullPath = Path.Combine(installationFolder, "updater.exe");
 
             int returnCode = await RunProcessAsync(fullPath, "/justcheck");
 
-            if(returnCode == 0)
+            if (returnCode == 0)
             {
                 StringBuilder messageSb = new StringBuilder(256);
                 messageSb.AppendLine(Lang.Message.Question.NewVersionIsAvailable);
-            
+
                 if (MessageBox.Show(rootElement, messageSb.ToString(), Lang.Message.Question.Title, MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     Process.Start(fullPath, "/checknow");
