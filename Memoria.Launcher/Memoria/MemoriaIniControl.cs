@@ -32,7 +32,7 @@ namespace Memoria.Launcher
 
             PsxFontInstalled = IsOptionPresentInIni("Graphics", "UseGarnetFont");
             SBUIInstalled = IsOptionPresentInIni("Graphics", "ScaledBattleUI");
-            short baseNumberOfRows = 23;
+            short baseNumberOfRows = 25;
             short numberOfRows = baseNumberOfRows;
             if (PsxFontInstalled)
                 numberOfRows = (short)(numberOfRows + 2);
@@ -137,18 +137,11 @@ namespace Memoria.Launcher
             musicVolumeSlider.Minimum = 0;
             musicVolumeSlider.Maximum = 100;
             musicVolumeSlider.Margin = rowMargin;
+            UiCheckBox useGarnetFont = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.UsePsxFont, null), 23, 0, 2, 8);
+            useGarnetFont.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(UseGarnetFont)) { Mode = BindingMode.TwoWay });
+            useGarnetFont.Foreground = Brushes.White;
+            useGarnetFont.Margin = rowMargin;
 
-
-
-            if (PsxFontInstalled)
-            {
-                UiCheckBox useGarnetFont = AddUiElement(UiCheckBoxFactory.Create(Lang.Settings.UsePsxFont, null), (short)(baseNumberOfRows), 0, 2, 8);
-                useGarnetFont.SetBinding(ToggleButton.IsCheckedProperty, new Binding(nameof(UseGarnetFont)) { Mode = BindingMode.TwoWay });
-                useGarnetFont.Foreground = Brushes.White;
-                useGarnetFont.Margin = rowMargin;
-
-                baseNumberOfRows = (short)(baseNumberOfRows + 2);
-            }
 
             if (SBUIInstalled)
             {
@@ -173,6 +166,24 @@ namespace Memoria.Launcher
 
                 //baseNumberOfRows = (short)(baseNumberOfRows + 4);
 
+            }
+
+            foreach (FrameworkElement child in Children)
+            {
+                //if (!ReferenceEquals(child, backround))
+                //child.Margin = new Thickness(child.Margin.Left + 8, child.Margin.Top, child.Margin.Right + 8, child.Margin.Bottom);
+
+                TextBlock textblock = child as TextBlock;
+                if (textblock != null)
+                {
+                    textblock.Foreground = Brushes.Black;
+                    textblock.FontWeight = FontWeight.FromOpenTypeWeight(500);
+                    continue;
+                }
+
+                Control control = child as Control;
+                if (control != null && !(control is ComboBox))
+                    control.Foreground = Brushes.Black;
             }
 
             LoadSettings();

@@ -70,7 +70,16 @@ public class UIManager : PersistenSingleton<UIManager>
 		}
 	}
 
-	public UIManager.UIState State
+
+    public static Vector4 ScreenResUIScreenCoOrdinate
+    {
+        get
+        {
+            return new Vector4(-Screen.width / 2f, -Screen.height / 2f, Screen.width / 2f, Screen.height / 2f);
+        }
+    }
+
+    public UIManager.UIState State
 	{
 		get
 		{

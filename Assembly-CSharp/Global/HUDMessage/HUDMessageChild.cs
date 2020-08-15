@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using UnityEngine;
+using Memoria;
 
 [RequireComponent(typeof(UILabel))]
 [RequireComponent(typeof(TweenPosition))]
@@ -63,6 +64,7 @@ public class HUDMessageChild : MonoBehaviour
 		if (!this.isInitialized)
 		{
 			this.myTransform = base.transform;
+            myTransform.localScale = Vector3.one;
 			this.parentGameObject = this.myTransform.parent.gameObject;
 			this.label = base.GetComponent<UILabel>();
 			this.uiWidget = base.GetComponent<UIWidget>();

@@ -11,8 +11,8 @@ namespace Memoria
             public static Int32 BattleSwirlFrames => Instance._graphics.BattleSwirlFrames;
             public static Int32 SkipIntros = Instance._graphics.SkipIntros;
             public static Int32 GarnetHair => Instance._graphics.GarnetHair;
-            public static Int32 TileSize => Instance._graphics.TileSize;
 
+            public static Boolean UseGarnetFont => Instance._graphics.UseGarnetFont;
             private static volatile Boolean _widescreenSupport = InitializeWidescreenSupport();
 
             public static Boolean InitializeWidescreenSupport()

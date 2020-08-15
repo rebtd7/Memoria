@@ -99,6 +99,7 @@ namespace Memoria.Launcher
             masterSkill.Foreground = Brushes.White;
             masterSkill.Margin = rowMargin;
 
+
             UiTextBlock battleFpsText = AddUiElement(UiTextBlockFactory.Create(Lang.Settings.BattleFPS), row: 19, col: 0, rowSpan: 2, colSpan: 8);
             battleFpsText.Foreground = Brushes.White;
             battleFpsText.Margin = rowMargin;
@@ -115,6 +116,24 @@ namespace Memoria.Launcher
             battleFps.Minimum = 15;
             battleFps.Maximum = 60;
             battleFps.Margin = new Thickness(0, 0, 3, 0);
+
+            foreach (FrameworkElement child in Children)
+            {
+                //if (!ReferenceEquals(child, backround))
+                //child.Margin = new Thickness(child.Margin.Left + 8, child.Margin.Top, child.Margin.Right + 8, child.Margin.Bottom);
+
+                TextBlock textblock = child as TextBlock;
+                if (textblock != null)
+                {
+                    textblock.Foreground = Brushes.Black;
+                    textblock.FontWeight = FontWeight.FromOpenTypeWeight(500);
+                    continue;
+                }
+
+                Control control = child as Control;
+                if (control != null && !(control is ComboBox))
+                    control.Foreground = Brushes.Black;
+            }
 
             LoadSettings();
         }

@@ -50,7 +50,7 @@
 			MaxStealRate = " 100% steal rate"
 			DisableCantConcentrate = " Disable 'can't concentrate'"
 			SpeedMode = " Speed mode | F1"
-			SpeedFactor = "SpeedFactor"
+			SpeedFactor = "Speed"
 			PermanentTranse = " Permanent transe | F2"
 			MaxDamage = " Max damage | F3"
 			NoRandomBattles = " No random battles | F4"

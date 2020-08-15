@@ -360,6 +360,7 @@
     <Compile Include="Memoria\Configuration\Access\Icons.cs" />
     <Compile Include="Memoria\Configuration\Access\Hacks.cs" />
     <Compile Include="Memoria\Configuration\Access\Import.cs" />
+    <Compile Include="Memoria\Configuration\Access\System.cs" />
     <Compile Include="Memoria\Configuration\Access\TetraMaster.cs" />
     <Compile Include="Memoria\Configuration\MemoriaConfigurationMenu.cs" />
     <Compile Include="Memoria\Configuration\Structure\ModSection.cs" />
@@ -375,6 +376,7 @@
     <Compile Include="Memoria\Configuration\Structure\DebugSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\FixesSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\HacksSection.cs" />
+    <Compile Include="Memoria\Configuration\Structure\SystemSection.cs" />
     <Compile Include="Memoria\Configuration\Structure\TetraMasterSection.cs" />
     <Compile Include="Memoria\Data\Battle\AccessoryItem.cs" />
     <Compile Include="Memoria\Data\Battle\BattleAbilityHelper.cs" />
